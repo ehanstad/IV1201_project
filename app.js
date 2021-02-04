@@ -2,7 +2,6 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const { Client } = require('pg');
-const indexRouter = require('./routes/index');
 
 const app = express();
 
@@ -10,12 +9,13 @@ const app = express();
 const connectionString = process.env.DATABASE_URL;
 const client = new Client({
   connectionString,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
-client.connect();
+client.connect().then(() => console.log('Connected to db.')).catch((err) => console.log(err));
 
 app.use(express.json());
-
-app.use('/api/hello', indexRouter);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('frontend/build'));
