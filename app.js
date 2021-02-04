@@ -7,20 +7,21 @@ const app = express();
 
 app.use(express.json());
 
-app.use('/', indexRouter);
+app.use('/api/hello', indexRouter);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("frontend/build"));
 }
+
+app.get('*', (request, response) => {
+  response.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
 });
 
-app.get('*', (request, response) => {
-  response.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
 
 // error handler
 app.use((err, req, res) => {
