@@ -24,7 +24,9 @@
     "pg": "^8.5.1"
   },
   "jest": {
-    "testPathIgnorePatterns": ["frontend"]
+    "testPathIgnorePatterns": [
+      "frontend"
+    ]
   },
   "devDependencies": {
     "eslint": "^7.18.0",

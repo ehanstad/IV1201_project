@@ -1,21 +1,13 @@
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
-const { Client } = require('pg');
+const Registration = require('./routes/api/registration');
 
 const app = express();
 
-// connect to db
-const connectionString = process.env.DATABASE_URL;
-const client = new Client({
-  connectionString,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
-client.connect().then(() => console.log('Connected to db.')).catch((err) => console.log(err));
-
 app.use(express.json());
+
+//app.use("/api/registration", Registration);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('frontend/build'));
