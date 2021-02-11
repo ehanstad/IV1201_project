@@ -1,5 +1,6 @@
 /**
  * @file The component for adding a new applicant
+ * @requires axios
  * @author Erik Hanstad
  */
 import axios from 'axios';
