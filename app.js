@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.json());
 
-//app.use("/api/registration", Registration);
+app.use('/api/registration', Registration);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('frontend/build'));

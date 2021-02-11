@@ -2,7 +2,7 @@
  * @file The component for adding a new applicant
  * @author Erik Hanstad
  */
-
+import axios from 'axios';
 import React, { Component } from 'react';
 import './App.css';
 
@@ -14,25 +14,16 @@ class App extends Component {
       lname: '',
       ssn: '',
       email: '',
-      pass: '',
     };
   }
 
   addApplicant = (e) => {
-    const {
-      fname,
-      lname,
-      ssn,
-      email,
-      pass,
-    } = this.state;
-    console.log(this.state);
-    console.log(fname);
-    console.log(lname);
-    console.log(ssn);
-    console.log(email);
-    console.log(pass);
-    console.log(e);
+    e.preventDefault();
+    axios.post('/api/registration', this.state).then(() => {
+      alert('Success');
+    }).catch(() => {
+      alert('Something went wrong');
+    });
   };
 
   fnameChange = (e) => {
@@ -51,15 +42,11 @@ class App extends Component {
     this.setState({ email: e.target.value });
   };
 
-  passChange = (e) => {
-    this.setState({ pass: e.target.value });
-  };
-
   render() {
     return (
       <div className="App">
         <h2>Add applicant</h2>
-        <form onSubmit={this.addApplicant}>
+        <form>
           <div>
             <p>First name:</p>
             <input type="text" id="fname" onChange={this.fnameChange} />
@@ -69,10 +56,8 @@ class App extends Component {
             <input type="text" id="ssn" onChange={this.ssnChange} />
             <p>Email:</p>
             <input type="text" id="email" onChange={this.emailChange} />
-            <p>Password:</p>
-            <input type="password" id="password" onChange={this.passChange} />
           </div>
-          <button type="submit" data-testid="sendButton">
+          <button type="submit" data-testid="sendButton" onClick={this.addApplicant}>
             Add
           </button>
         </form>
