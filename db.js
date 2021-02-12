@@ -10,6 +10,9 @@ const pool = new Pool({
   },
 });
 
+/*
+Creates a new user and inserts user data to the person table
+*/
 const newUser = async (name, surname, ssn, email) => {
   pool.query('INSERT INTO person (Name, Surname, Ssn, Email, Role_id) VALUES ($1, $2, $3, $4, $5)',
     [name, surname, ssn, email, 2], (err, res) => {
