@@ -1,18 +1,22 @@
+// module dependencies
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const Registration = require('./routes/api/registration');
 
+// create exrpess application
 const app = express();
 
+// use JSON middleware parser
 app.use(express.json());
 
+// API routes
 app.use('/api/registration', Registration);
 
+// serve static files
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('frontend/build'));
 }
-
 app.get('*', (request, response) => {
   response.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
 });
