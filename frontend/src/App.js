@@ -18,6 +18,11 @@ class App extends Component {
     };
   }
 
+  /**
+   * Adds the applicants information to a database
+   *
+   * @param {button} e - The forms submitbutton
+   */
   addApplicant = (e) => {
     e.preventDefault();
     axios.post('/api/registration', this.state).then(() => {
@@ -27,18 +32,38 @@ class App extends Component {
     });
   };
 
+  /**
+   * changes the the state for the first name
+   *
+   * @param {input} e - The inputbox for the firstname
+   */
   fnameChange = (e) => {
     this.setState({ fname: e.target.value });
   };
 
+  /**
+   * changes the the state for the surname
+   *
+   * @param {input} e - The inputbox for the surname
+   */
   lnameChange = (e) => {
     this.setState({ lname: e.target.value });
   };
 
+  /**
+   * changes the the state for the social security number
+   *
+   * @param {input} e - The inputbox for the ssn
+   */
   ssnChange = (e) => {
     this.setState({ ssn: e.target.value });
   };
 
+  /**
+   * changes the the state for the email
+   *
+   * @param {input} e - The inputbox for the email
+   */
   emailChange = (e) => {
     this.setState({ email: e.target.value });
   };
