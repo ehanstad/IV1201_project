@@ -6,9 +6,10 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "airbnb",
+        "airbnb-base",
         "plugin:jest/recommended"
     ],
+    "parser": "babel-eslint",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
