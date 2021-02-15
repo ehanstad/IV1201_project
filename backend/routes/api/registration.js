@@ -4,7 +4,7 @@ const { newUser } = require('../../db');
 const router = Router();
 
 /**
- * 
+ *
   Sends registration form data to db module.
   Responds with either a success or error 500.
  */
