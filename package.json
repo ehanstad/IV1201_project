@@ -6,6 +6,7 @@
   },
   "description": "main",
   "scripts": {
+    "dev": "concurrently \"npm run server --prefix backend\" \"npm run start --prefix frontend\"",
     "start": "node backend/server.js",
     "build": "npm run --prefix frontend build",
     "clean-install": "npm ci --prefix backend && npm ci --prefix frontend",
@@ -16,10 +17,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lucasvil/testing_repo.git"
+    "url": "git+https://github.com/ehanstad/IV1201_project.git"
   },
   "author": "Lucas Villarroel",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "concurrently": "^5.3.0"
+  },
   "devDependencies": {}
 }

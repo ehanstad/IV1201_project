@@ -9,12 +9,10 @@
     "start": "node server",
     "lint": "eslint .",
     "client": "npm start --prefix frontend",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "nodemon server",
     "test": "jest __tests__/*"
   },
   "dependencies": {
-    "concurrently": "^5.3.0",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
     "express": "~4.16.1",
