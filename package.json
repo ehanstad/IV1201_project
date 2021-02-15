@@ -7,7 +7,7 @@
   "description": "main",
   "scripts": {
     "dev": "concurrently \"npm run server --prefix backend\" \"npm run start --prefix frontend\"",
-    "start": "node backend/server.js",
+    "start": "npm run start --prefix backend",
     "build": "npm run --prefix frontend build",
     "clean-install": "npm ci --prefix backend && npm ci --prefix frontend",
     "install": "npm i --prefix backend && npm i --prefix frontend",
