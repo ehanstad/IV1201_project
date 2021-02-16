@@ -60,9 +60,7 @@ class Login extends Component {
           </button>
         </form>
         <a href="./registration">
-          <button type="button">
-            Registrate
-          </button>
+          Create a new account.
         </a>
       </div>
     );

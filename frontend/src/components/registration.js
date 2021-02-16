@@ -107,7 +107,7 @@ class Registration extends Component {
             <input type="password" id="password" required onChange={this.passwordChange} />
           </div>
           <button type="submit">
-            Registrate
+            Register
           </button>
         </form>
       </div>
