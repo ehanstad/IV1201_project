@@ -13,12 +13,9 @@ const pool = new Pool({
 /*
 Creates a new user and inserts user data to the person table
 */
-const newUser = async (name, surname, ssn, email) => {
-  pool.query('INSERT INTO person (Name, Surname, Ssn, Email, Role_id) VALUES ($1, $2, $3, $4, $5)',
-    [name, surname, ssn, email, 2], (err, res) => {
-      if (err) throw err;
-      return res;
-    });
-};
+const newUser = async (name, surname, ssn, email, pass, username) => pool.query('INSERT INTO person (Name, Surname, Ssn, Email, Role_id, Password, Username) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+  [name, surname, ssn, email, 2, pass, username]).then((res) => res);
 
-module.exports = { newUser };
+const login = async (username) => pool.query('SELECT * FROM person WHERE Username= $1', [username]).then((res) => res.rows);
+
+module.exports = { newUser, login };
