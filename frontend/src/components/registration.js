@@ -26,7 +26,7 @@ class Registration extends Component {
    */
   addApplicant = (e) => {
     e.preventDefault();
-    axios.post('/api/registration', this.state).then(() => {
+    axios.post('/api/user/registration', this.state).then(() => {
       alert('Success');
     }).catch(() => {
       alert('Something went wrong');
@@ -34,7 +34,7 @@ class Registration extends Component {
   };
 
   /**
-   * changes the the state for the first name
+   * changes the state for the first name
    *
    * @param {input} e - The inputbox for the firstname
    */
@@ -43,7 +43,7 @@ class Registration extends Component {
   };
 
   /**
-   * changes the the state for the surname
+   * changes the state for the surname
    *
    * @param {input} e - The inputbox for the surname
    */
@@ -52,7 +52,7 @@ class Registration extends Component {
   };
 
   /**
-   * changes the the state for the social security number
+   * changes the state for the social security number
    *
    * @param {input} e - The inputbox for the ssn
    */
@@ -61,7 +61,7 @@ class Registration extends Component {
   };
 
   /**
-   * changes the the state for the email
+   * changes the state for the email
    *
    * @param {input} e - The inputbox for the email
    */
@@ -70,7 +70,7 @@ class Registration extends Component {
   };
 
   /**
-   * changes the the state for the username
+   * changes the state for the username
    *
    * @param {input} e - The inputbox for the username
    */
@@ -79,7 +79,7 @@ class Registration extends Component {
   };
 
   /**
-   * changes the the state for the password
+   * changes the state for the password
    *
    * @param {input} e - The inputbox for the password
    */
@@ -110,6 +110,9 @@ class Registration extends Component {
             Register
           </button>
         </form>
+        <a href="./">
+          Login
+        </a>
       </div>
     );
   }

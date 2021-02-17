@@ -5,6 +5,7 @@
  */
 
 import React, { Component } from 'react';
+import axios from 'axios';
 
 class Login extends Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class Login extends Component {
   }
 
   /**
-   * changes the the state for the username
+   * changes the state for the username
    *
    * @param {input} e - The inputbox for the username
    */
@@ -25,7 +26,7 @@ class Login extends Component {
   };
 
   /**
-   * changes the the state for the password
+   * changes the state for the password
    *
    * @param {input} e - The inputbox for the password
    */
@@ -34,14 +35,31 @@ class Login extends Component {
   };
 
   /**
-   *
+   * checks if the login is correct and sends the person to next side
    *
    * @param {button} e - The forms submitbutton
    */
   login = (e) => {
     e.preventDefault();
-    console.log(this.state);
-    /* TODO call getuser function and crosscheck with written infromation */
+    let person;
+
+    axios.post('/api/user/login', this.state).then((res) => {
+      person = res;
+    }).catch(() => {
+      alert('No user by that name, please try again');
+    });
+
+    const { pass } = person;
+    const { password } = this.state;
+    if (pass === password) {
+      if (person.role_id === 1) {
+        /* SEND TO ADMIN SIDE */
+      } else {
+        /* SEND TO APPLICATION SIDE */
+      }
+    } else {
+      alert('Wrong password, please try again');
+    }
   };
 
   render() {
