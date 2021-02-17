@@ -27,10 +27,10 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  login(req.body.username, req.body.pass)
+  login(req.body.uname, req.body.pass)
     .then((dbRes) => {
       bcrypt.compare(req.body.pass, dbRes[0].password).then((result) => {
-        if (result) res.json(dbRes[0]);
+        if (result) res.json({ pid: dbRes[0].person_id, rid: dbRes[0].role_id });
         else if (!result) res.status(403).json({ msg: 'Access denied.' });
       });
     }).catch((err) => {

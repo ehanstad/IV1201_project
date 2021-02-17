@@ -5,6 +5,8 @@
  */
 
 import React, { Component } from 'react';
+import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 class Login extends Component {
   constructor(props) {
@@ -12,11 +14,12 @@ class Login extends Component {
     this.state = {
       uname: '',
       pass: '',
+      rid: '',
     };
   }
 
   /**
-   * changes the the state for the username
+   * changes the state for the username
    *
    * @param {input} e - The inputbox for the username
    */
@@ -25,7 +28,7 @@ class Login extends Component {
   };
 
   /**
-   * changes the the state for the password
+   * changes the state for the password
    *
    * @param {input} e - The inputbox for the password
    */
@@ -34,17 +37,35 @@ class Login extends Component {
   };
 
   /**
-   *
+   * checks if the login is correct and sends the person to next side
    *
    * @param {button} e - The forms submitbutton
    */
   login = (e) => {
     e.preventDefault();
-    console.log(this.state);
-    /* TODO call getuser function and crosscheck with written infromation */
+    const { uname, pass } = this.state;
+    axios.post('/api/user/login', { uname, pass }).then((res) => {
+      const { pid, rid } = res.data;
+      console.log(pid);
+      /* SET STATE TO LOGGED IN */
+      this.setState({ rid });
+    }).catch((err) => {
+      console.log(err);
+      alert('No user by that name, please try again');
+    });
   };
 
   render() {
+    const { rid } = this.state;
+    if (rid === '1') {
+      return (
+        <Redirect to="/admin" />
+      );
+    } if (rid === '2') {
+      return (
+        <Redirect to="/application" />
+      );
+    }
     return (
       <div>
         <h2> LOGIN </h2>
