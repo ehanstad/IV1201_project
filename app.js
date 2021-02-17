@@ -3,6 +3,7 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const Registration = require('./routes/api/registration');
+const Login = require('./routes/api/login');
 
 // create exrpess application
 const app = express();
@@ -12,6 +13,7 @@ app.use(express.json());
 
 // API routes
 app.use('/api/registration', Registration);
+app.use('/api/login', Login);
 
 // serve static files
 if (process.env.NODE_ENV === 'production') {
