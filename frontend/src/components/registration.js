@@ -26,7 +26,7 @@ class Registration extends Component {
    */
   addApplicant = (e) => {
     e.preventDefault();
-    axios.post('/api/user/registration', this.state).then(() => {
+    axios.post('/api/user/register', this.state).then(() => {
       alert('Success');
     }).catch(() => {
       alert('Something went wrong');

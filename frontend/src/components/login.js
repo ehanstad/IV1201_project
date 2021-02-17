@@ -6,6 +6,7 @@
 
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 class Login extends Component {
   constructor(props) {
@@ -13,6 +14,7 @@ class Login extends Component {
     this.state = {
       uname: '',
       pass: '',
+      rid: '',
     };
   }
 
@@ -41,28 +43,29 @@ class Login extends Component {
    */
   login = (e) => {
     e.preventDefault();
-    let person;
-
-    axios.post('/api/user/login', this.state).then((res) => {
-      person = res;
-    }).catch(() => {
+    const { uname, pass } = this.state;
+    axios.post('/api/user/login', { uname, pass }).then((res) => {
+      const { pid, rid } = res.data;
+      console.log(pid);
+      /* SET STATE TO LOGGED IN */
+      this.setState({ rid });
+    }).catch((err) => {
+      console.log(err);
       alert('No user by that name, please try again');
     });
-
-    const { pass } = person;
-    const { password } = this.state;
-    if (pass === password) {
-      if (person.role_id === 1) {
-        /* SEND TO ADMIN SIDE */
-      } else {
-        /* SEND TO APPLICATION SIDE */
-      }
-    } else {
-      alert('Wrong password, please try again');
-    }
   };
 
   render() {
+    const { rid } = this.state;
+    if (rid === '1') {
+      return (
+        <Redirect to="/admin" />
+      );
+    } if (rid === '2') {
+      return (
+        <Redirect to="/application" />
+      );
+    }
     return (
       <div>
         <h2> LOGIN </h2>
