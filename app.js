@@ -2,12 +2,16 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const Registration = require('./routes/api/registration');
+const Login = require('./routes/api/login');
+
 
 const app = express();
 
 app.use(express.json());
 
 app.use('/api/registration', Registration);
+app.use('/api/login', Login);
+
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('frontend/build'));

@@ -9,7 +9,8 @@ const router = Router();
   Responds with either a success or error 500.
  */
 router.post('/', (req, res) => {
-  newUser(req.body.fname, req.body.lname, req.body.ssn, req.body.email)
+  newUser(req.body.fname, req.body.lname, req.body.ssn, req.body.email, req.body.pass,
+    req.body.username)
   .then((dbRes) => {
       res.json(dbRes);
     }).catch((dbErr) => {
