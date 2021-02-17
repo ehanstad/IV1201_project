@@ -1,6 +1,6 @@
 # IV1201_project
 
-# Setup
+## Setup
 Installing dependencies
 - `git clone https://github.com/ehanstad/IV1201_project.git`
 - `cd IV1201_project`
@@ -12,7 +12,7 @@ Setup enviroment variables
 - Create a file `.env` in root directory.
 - Write enviroment varibales to this file (api keys, db user/pass etc)
 
-# Using the application locally
+## Using the application locally
 To run only the Express application (with nodemon)
 - `npm run server`
 
