@@ -12,7 +12,7 @@ const setApplication = async (competenceId, personId, yearsOfExperience) => pool
   [competenceId, personId, yearsOfExperience]);
 
 /*
- *
+ *  Inserts availabilty data to the availability table
  */
 const setAvailability = async (fromDate, toDate, pid) => pool.query('INSERT INTO availability (from_date, person_id, to_date) VALUES($1, $2, $3)', [fromDate, pid, toDate]);
 

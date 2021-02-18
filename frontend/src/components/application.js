@@ -9,7 +9,7 @@ import axios from 'axios';
 class Application extends Component {
   login = (e) => {
     e.preventDefault();
-    axios.post('/api/application/register',
+    /* axios.post('/api/application/register',
       {
         com: [{
           cid: 1,
@@ -20,15 +20,18 @@ class Application extends Component {
         toDate: '2014-01-03',
       }).then((res) => {
       console.log(res);
+    }); */
+    axios.post('/api/admin/applications').then((res) => {
+      console.log(res);
     });
   };
 
   render() {
     return (
       <div>
-        Application
+        <p>Application</p>
         <button type="submit" onClick={this.login}>
-          LOGIN
+          TEST
         </button>
       </div>
     );

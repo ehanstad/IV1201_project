@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const User = require('./routes/api/user');
 const Application = require('./routes/api/application');
+const Admin = require('./routes/api/admin');
 
 // create exrpess application
 const app = express();
@@ -14,6 +15,7 @@ app.use(express.json());
 // API routes
 app.use('/api/user', User);
 app.use('/api/application', Application);
+app.use('/api/admin', Admin);
 
 // serve static files
 if (process.env.NODE_ENV === 'production') {
