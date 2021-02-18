@@ -1,7 +1,7 @@
 const { pool } = require('./db');
 
 /*
- *
+ * Gets all applications from database
  */
 const getApplications = async () => pool.query(
   'SELECT person.*, competence.name, competence_profile.years_of_experience, availability.from_date, availability.to_date '

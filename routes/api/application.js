@@ -26,8 +26,8 @@ router.post('/register', async (req, res) => {
 });
 
 /**
- *
- *
+ * Gets a list of competences from db module
+ * Responds with either a success or error 500.
  */
 router.post('/competence', async (req, res) => {
   getCompetence().then((dbRes) => {
