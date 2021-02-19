@@ -1,10 +1,11 @@
 /**
  * @file The component for adding a new applicant
- * @requires axios
  * @author Erik Hanstad
  */
-import axios from 'axios';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { PropTypes } from 'prop-types';
+import { register } from '../redux/actions/authActions';
 
 class Registration extends Component {
   constructor(props) {
@@ -26,11 +27,9 @@ class Registration extends Component {
    */
   addApplicant = (e) => {
     e.preventDefault();
-    axios.post('/api/user/register', this.state).then(() => {
-      alert('Success');
-    }).catch(() => {
-      alert('Something went wrong');
-    });
+    const { fname, lname, ssn, email, uname, pass } = this.state;
+    const { dispatchRegister } = this.props;
+    dispatchRegister({ fname, lname, ssn, email, uname, pass });
   };
 
   /**
@@ -106,16 +105,16 @@ class Registration extends Component {
             <p>Password:</p>
             <input type="password" id="password" required onChange={this.passwordChange} />
           </div>
-          <button type="submit">
-            Register
-          </button>
+          <button type="submit">Register</button>
         </form>
-        <a href="./">
-          Login
-        </a>
+        <a href="./">Login</a>
       </div>
     );
   }
 }
 
-export default Registration;
+Registration.propTypes = {
+  dispatchRegister: PropTypes.func.isRequired,
+};
+
+export default connect(null, { dispatchRegister: register })(Registration);
