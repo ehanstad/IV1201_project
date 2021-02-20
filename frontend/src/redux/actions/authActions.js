@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { returnError } from './errorActions';
 import { LOGIN_SUCCESS, LOGIN_FAIL, REGISTER_SUCCESS, REGISTER_FAIL, LOADING } from '../types';
 
 const config = {
@@ -18,7 +19,9 @@ export const login = ({ uname, pass }) => (dispatch) => {
         payload: res.data,
       });
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(err);
+      dispatch(returnError(err.response.data.msg, err.response.status, LOGIN_FAIL));
       dispatch({
         type: LOGIN_FAIL,
       });
@@ -36,7 +39,9 @@ export const register = ({ fname, lname, ssn, email, uname, pass }) => (dispatch
         payload: res.data,
       });
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(err);
+      dispatch(returnError(err.response.data.msg, err.response.status, REGISTER_FAIL));
       dispatch({
         type: REGISTER_FAIL,
       });
