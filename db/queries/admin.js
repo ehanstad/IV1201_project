@@ -1,4 +1,4 @@
-const { pool } = require('./db');
+const { pool } = require('../db');
 
 /*
  * Gets all applications from database

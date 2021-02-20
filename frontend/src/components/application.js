@@ -3,39 +3,14 @@
  * @requires react-router-dom
  * @author Erik Hanstad
  */
-import React, { Component } from 'react';
-import axios from 'axios';
+import React from 'react';
 
-class Application extends Component {
-  login = (e) => {
-    e.preventDefault();
-    /* axios.post('/api/application/register',
-      {
-        com: [{
-          cid: 1,
-          yoe: 3,
-        }],
-        pid: 4,
-        fromDate: '2013-12-13',
-        toDate: '2014-01-03',
-      }).then((res) => {
-      console.log(res);
-    }); */
-    axios.post('/api/admin/applications').then((res) => {
-      console.log(res);
-    });
-  };
-
-  render() {
-    return (
-      <div>
-        <p>Application</p>
-        <button type="submit" onClick={this.login}>
-          TEST
-        </button>
-      </div>
-    );
-  }
+function Application() {
+  return (
+    <div>
+      <p>Application</p>
+    </div>
+  );
 }
 
 export default Application;

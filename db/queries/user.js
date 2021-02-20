@@ -1,4 +1,4 @@
-const { pool } = require('./db');
+const { pool } = require('../db');
 
 /*
  * Creates a new user and inserts user data to the person table
