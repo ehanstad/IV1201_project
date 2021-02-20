@@ -1,5 +1,5 @@
 /**
- * @file Store that hold the state tree.
+ * @file Store which holds the state tree.
  * @requires redux
  * @requires redux-thunk
  * @author Lucas Villarroel <lucasvi@kth.se>
