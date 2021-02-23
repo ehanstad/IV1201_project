@@ -47,15 +47,11 @@ class Login extends Component {
     axios
       .post('/api/user/login', { uname, pass })
       .then((res) => {
-        const { pid, rid } = res.data;
-        console.log(pid);
+        const { rid } = res.data;
         /* SET STATE TO LOGGED IN */
         this.setState({ rid });
       })
-      .catch((err) => {
-        console.log(err);
-        alert('No user by that name, please try again');
-      });
+      .catch(() => {});
   };
 
   render() {

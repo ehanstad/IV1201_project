@@ -28,12 +28,8 @@ class Registration extends Component {
     e.preventDefault();
     axios
       .post('/api/user/register', this.state)
-      .then(() => {
-        alert('Success');
-      })
-      .catch(() => {
-        alert('Something went wrong');
-      });
+      .then(() => {})
+      .catch(() => {});
   };
 
   /**
