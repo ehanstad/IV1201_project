@@ -19,10 +19,10 @@ app.use('/api/admin', Admin);
 
 // serve static files
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('frontend/build'));
+  app.use(express.static('../frontend/build'));
 }
 app.get('*', (request, response) => {
-  response.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+  response.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
 // catch 404 and forward to error handler
