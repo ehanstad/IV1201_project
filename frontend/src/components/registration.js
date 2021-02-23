@@ -26,11 +26,10 @@ class Registration extends Component {
    */
   addApplicant = (e) => {
     e.preventDefault();
-    axios.post('/api/user/register', this.state).then(() => {
-      alert('Success');
-    }).catch(() => {
-      alert('Something went wrong');
-    });
+    axios
+      .post('/api/user/register', this.state)
+      .then(() => {})
+      .catch(() => {});
   };
 
   /**
@@ -106,13 +105,9 @@ class Registration extends Component {
             <p>Password:</p>
             <input type="password" id="password" required onChange={this.passwordChange} />
           </div>
-          <button type="submit">
-            Register
-          </button>
+          <button type="submit">Register</button>
         </form>
-        <a href="./">
-          Login
-        </a>
+        <a href="./">Login</a>
       </div>
     );
   }

@@ -1,13 +1,18 @@
 {
     "env": {
         "browser": true,
-        "commonjs": true,
-        "es2020": true
+        "es6": true,
+        "node": true,
+        "jest": true
     },
     "extends": [
+        "plugin:prettier/recommended",
+        "react-app",
+        "eslint:recommended",
         "plugin:react/recommended",
         "airbnb",
-        "plugin:jest/recommended"
+        "prettier/standard",
+        "prettier/react"
     ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -16,11 +21,19 @@
         "ecmaVersion": 12
     },
     "plugins": [
-        "react"
+        "react",
+        "prettier"
     ],
     "rules": {
-        "react/react-in-jsx-scope": "off",
-        "react/jsx-filename-extension": "off",
-        "react/prefer-stateless-function": "off"
+        "react/jsx-filename-extension": [
+            1,
+            {
+                "extensions": [
+                    ".js",
+                    ".jsx"
+                ]
+            }
+        ],
+        "object-curly-newline": "off" // prettier conflict
     }
 }

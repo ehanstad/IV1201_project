@@ -44,27 +44,23 @@ class Login extends Component {
   login = (e) => {
     e.preventDefault();
     const { uname, pass } = this.state;
-    axios.post('/api/user/login', { uname, pass }).then((res) => {
-      const { pid, rid } = res.data;
-      console.log(pid);
-      /* SET STATE TO LOGGED IN */
-      this.setState({ rid });
-    }).catch((err) => {
-      console.log(err);
-      alert('No user by that name, please try again');
-    });
+    axios
+      .post('/api/user/login', { uname, pass })
+      .then((res) => {
+        const { rid } = res.data;
+        /* SET STATE TO LOGGED IN */
+        this.setState({ rid });
+      })
+      .catch(() => {});
   };
 
   render() {
     const { rid } = this.state;
     if (rid === '1') {
-      return (
-        <Redirect to="/admin" />
-      );
-    } if (rid === '2') {
-      return (
-        <Redirect to="/application" />
-      );
+      return <Redirect to="/admin" />;
+    }
+    if (rid === '2') {
+      return <Redirect to="/application" />;
     }
     return (
       <div>
@@ -76,13 +72,9 @@ class Login extends Component {
             <p>Password:</p>
             <input type="password" id="password" required onChange={this.passwordChange} />
           </div>
-          <button type="submit">
-            LOGIN
-          </button>
+          <button type="submit">LOGIN</button>
         </form>
-        <a href="./registration">
-          Create a new account.
-        </a>
+        <a href="./registration">Create a new account.</a>
       </div>
     );
   }
