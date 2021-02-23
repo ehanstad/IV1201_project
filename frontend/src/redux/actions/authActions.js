@@ -5,15 +5,35 @@
  */
 import axios from 'axios';
 import { returnError } from './errorActions';
-import { LOGIN_SUCCESS, LOGIN_FAIL, REGISTER_SUCCESS, REGISTER_FAIL, LOADING } from '../types';
+import {
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+  REGISTER_SUCCESS,
+  REGISTER_FAIL,
+  LOADING,
+  AUTH_SUCCESS,
+  AUTH_FAIL,
+} from '../types';
 
-/**
- * Headers used when sending requests to server.
- */
-const config = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
+export const tokenConfig = (getState) => {
+  // Get token from localstorage
+  let token;
+  if (getState) {
+    token = getState().auth.token;
+  }
+
+  // Headers
+  const config = {
+    headers: {
+      'Content-type': 'application/json',
+    },
+  };
+
+  // If token, add to headers
+  if (token) {
+    config.headers['x-auth-token'] = token;
+  }
+  return config;
 };
 
 /**
@@ -25,7 +45,7 @@ export const login = ({ uname, pass }) => (dispatch) => {
   const body = JSON.stringify({ uname, pass });
   dispatch({ type: LOADING });
   axios
-    .post('/api/user/login', body, config)
+    .post('/api/user/login', body, tokenConfig())
     .then((res) => {
       dispatch({
         type: LOGIN_SUCCESS,
@@ -49,7 +69,7 @@ export const register = ({ fname, lname, ssn, email, uname, pass }) => (dispatch
   const body = JSON.stringify({ fname, lname, ssn, email, uname, pass });
   dispatch({ type: LOADING });
   axios
-    .post('/api/user/register', body, config)
+    .post('/api/user/register', body, tokenConfig())
     .then((res) => {
       dispatch({
         type: REGISTER_SUCCESS,
@@ -60,6 +80,29 @@ export const register = ({ fname, lname, ssn, email, uname, pass }) => (dispatch
       dispatch(returnError(err.response.data.msg, err.response.status, REGISTER_FAIL));
       dispatch({
         type: REGISTER_FAIL,
+      });
+    });
+};
+
+/**
+ * Sends a request to the server to try and register a user. Dispatches actions to
+ * trigger state changes based on success/fail.
+ * @param {Object} form_params The registration information entered by user.
+ */
+export const loadUser = () => (dispatch, getState) => {
+  dispatch({ type: LOADING });
+  axios
+    .get('/api/user/', tokenConfig(getState))
+    .then((res) => {
+      dispatch({
+        type: AUTH_SUCCESS,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      dispatch(returnError(err.response.data.msg, err.response.status, AUTH_FAIL));
+      dispatch({
+        type: AUTH_FAIL,
       });
     });
 };

@@ -3,7 +3,7 @@
  * @requires react-router-dom
  * @author Erik Hanstad
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import './App.css';
@@ -12,8 +12,12 @@ import Login from './components/login';
 import Admin from './components/admin';
 import Application from './components/application';
 import store from './store';
+import { loadUser } from './redux/actions/authActions';
 
 function App() {
+  useEffect(() => {
+    store.dispatch(loadUser());
+  });
   return (
     <Provider store={store}>
       <div className="App">

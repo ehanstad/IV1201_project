@@ -2,7 +2,15 @@
  * @file Reducer handling user authentication.
  * @author Lucas Villarroel <lucasvi@kth.se>
  */
-import { LOGIN_SUCCESS, REGISTER_SUCCESS, LOGIN_FAIL, REGISTER_FAIL, LOADING } from '../types';
+import {
+  LOGIN_SUCCESS,
+  REGISTER_SUCCESS,
+  LOGIN_FAIL,
+  REGISTER_FAIL,
+  LOADING,
+  AUTH_SUCCESS,
+  AUTH_FAIL,
+} from '../types';
 
 /**
  * The initial state.
@@ -27,20 +35,29 @@ export default function (state = initialState, action) {
         loading: true,
       };
     }
-    case LOGIN_SUCCESS:
-      localStorage.setItem('token', action.payload.token);
+    case AUTH_SUCCESS:
       return {
         ...state,
         isAuthenticated: true,
         user: action.payload,
+      };
+    case LOGIN_SUCCESS:
+      localStorage.setItem('token', action.payload.token);
+      return {
+        ...state,
+        token: action.payload.token,
         loading: false,
       };
+    case AUTH_FAIL:
     case REGISTER_SUCCESS:
     case LOGIN_FAIL:
     case REGISTER_FAIL:
       return {
         ...state,
         loading: false,
+        isAuthenticated: null,
+        user: null,
+        token: null,
       };
     default:
       return state;
