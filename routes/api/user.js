@@ -54,6 +54,10 @@ router.post('/login', async (req, res) => {
     });
 });
 
+/*
+Verifies token in order to grant access to 'protected' routes
+If verification fails 'Access denied' is returned
+*/
 const verify = function verifyToken(req, res, next) {
   const bearerHeader = req.headers.authorization;
   if (typeof bearerHeader !== 'undefined') {
