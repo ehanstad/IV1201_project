@@ -3,6 +3,8 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const User = require('./routes/api/user');
+const Application = require('./routes/api/application');
+const Admin = require('./routes/api/admin');
 
 // create exrpess application
 const app = express();
@@ -12,13 +14,15 @@ app.use(express.json());
 
 // API routes
 app.use('/api/user', User);
+app.use('/api/application', Application);
+app.use('/api/admin', Admin);
 
 // serve static files
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('frontend/build'));
+  app.use(express.static('../frontend/build'));
 }
 app.get('*', (request, response) => {
-  response.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+  response.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
 // catch 404 and forward to error handler
