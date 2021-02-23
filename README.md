@@ -15,7 +15,7 @@ Setup enviroment variables
 ## Using the application locally
 To run both Express and React applications concurrently (for development)
 - `npm run dev`
-- 
+
 To run only the Express application (with nodemon)
 - `/backend/npm run server` (in backend)
 
