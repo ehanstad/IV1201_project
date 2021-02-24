@@ -29,11 +29,11 @@ router.post('/register', (req, res) => {
   });
 });
 
-/*
-Method for login
-Compares password with hashed password from DB
-Returns JWT with users id and role id
-*/
+/**
+ * Method for login
+ * Compares password with hashed password from DB
+ * Returns JWT with users id and role id
+ */
 router.post('/login', async (req, res) => {
   getUser(req.body.uname, req.body.pass)
     .then((dbRes) => {
@@ -58,7 +58,7 @@ router.post('/login', async (req, res) => {
  * Gets user information if authenticated.
  */
 router.get('/auth', verify, async (req, res) => {
-  const { user } = req.verified;
+  const { user } = req.token;
   res.json(user);
 });
 

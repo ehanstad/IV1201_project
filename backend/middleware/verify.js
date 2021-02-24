@@ -14,7 +14,7 @@ const verify = function verifyToken(req, res, next) {
     const bearerToken = bearer[1];
     try {
       const user = jwt.verify(bearerToken, secretKey);
-      req.verified = user;
+      req.token = user;
       next();
     } catch (err) {
       res.status(400).json({ msg: 'Invalid token' });
