@@ -1,10 +1,16 @@
+/* eslint-disable react/no-did-update-set-state */
 /**
  * @file The component for adding a new applicant
- * @requires axios
  * @author Erik Hanstad
+ * @author Lucas Villarroel
  */
-import axios from 'axios';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { PropTypes } from 'prop-types';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Button, Alert, Form, Card } from 'react-bootstrap';
+import { register } from '../redux/actions/authActions';
+import { REGISTER_FAIL } from '../redux/types';
 
 class Registration extends Component {
   constructor(props) {
@@ -14,10 +20,49 @@ class Registration extends Component {
       lname: '',
       ssn: '',
       email: '',
-      uname: '',
+      username: '',
       pass: '',
+      message: '',
+      loading: false,
+      error: false,
     };
   }
+
+  /**
+   * Updates error message and checks if registration successful.
+   * @param {Object} prevProps - Previous props
+   */
+  componentDidUpdate(prevProps) {
+    const { error, auth } = this.props;
+    const { loading } = this.state;
+    if (error !== prevProps.error) {
+      if (error.id === REGISTER_FAIL) {
+        this.setState({
+          message: 'A person with that email or username already exists.',
+          loading: false,
+          error: true,
+        });
+      } else {
+        this.setState({ message: null });
+      }
+    }
+    if (loading) {
+      if (!auth.loading) {
+        this.registerSuccess();
+      }
+    }
+  }
+
+  /**
+   * Updates states on registration success.
+   */
+  registerSuccess = () => {
+    this.setState({
+      loading: false,
+      message: 'Account created successfully.',
+      error: false,
+    });
+  };
 
   /**
    * Adds the applicants information to a database
@@ -26,10 +71,13 @@ class Registration extends Component {
    */
   addApplicant = (e) => {
     e.preventDefault();
-    axios
-      .post('/api/user/register', this.state)
-      .then(() => {})
-      .catch(() => {});
+    this.setState({
+      loading: true,
+    });
+    const { fname, lname, ssn, email, username, pass } = this.state;
+    const { dispatchRegister } = this.props;
+    console.log({ fname, lname, ssn, email, username, pass });
+    dispatchRegister({ fname, lname, ssn, email, username, pass });
   };
 
   /**
@@ -74,7 +122,7 @@ class Registration extends Component {
    * @param {input} e - The inputbox for the username
    */
   usernameChange = (e) => {
-    this.setState({ uname: e.target.value });
+    this.setState({ username: e.target.value });
   };
 
   /**
@@ -87,30 +135,94 @@ class Registration extends Component {
   };
 
   render() {
+    const { message, error } = this.state;
     return (
-      <div className="App">
-        <h2>Registration</h2>
-        <form onSubmit={this.addApplicant}>
-          <div>
-            <p>First name:</p>
-            <input type="text" id="fname" required onChange={this.fnameChange} />
-            <p>Last name:</p>
-            <input type="text" id="lname" required onChange={this.lnameChange} />
-            <p>Social security number:</p>
-            <input type="text" id="ssn" required onChange={this.ssnChange} />
-            <p>Email:</p>
-            <input type="text" id="email" required onChange={this.emailChange} />
-            <p>Username:</p>
-            <input type="text" id="username" required onChange={this.usernameChange} />
-            <p>Password:</p>
-            <input type="password" id="password" required onChange={this.passwordChange} />
-          </div>
-          <button type="submit">Register</button>
-        </form>
-        <a href="./">Login</a>
-      </div>
+      <Card style={{ width: '40rem' }} className="mx-auto">
+        <Card.Body>
+          <h2>Registration</h2>
+          {
+            // eslint-disable-next-line no-nested-ternary
+            message ? (
+              error ? (
+                <Alert variant="danger">{message}</Alert>
+              ) : (
+                <Alert variant="success">{message}</Alert>
+              )
+            ) : null
+          }
+          <Form onSubmit={this.addApplicant}>
+            <Form.Group>
+              <Form.Label>First name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter first name"
+                required
+                onChange={this.fnameChange}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Last name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter last name"
+                required
+                onChange={this.lnameChange}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Social security number</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter social security #"
+                required
+                onChange={this.ssnChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter email"
+                required
+                onChange={this.emailChange}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter username"
+                required
+                onChange={this.usernameChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Enter password"
+                required
+                onChange={this.passwordChange}
+              />
+            </Form.Group>
+            <Button type="submit">Register</Button>
+          </Form>
+          <a href="./">Login</a>
+        </Card.Body>
+      </Card>
     );
   }
 }
 
-export default Registration;
+Registration.propTypes = {
+  dispatchRegister: PropTypes.func.isRequired,
+  error: PropTypes.shape.isRequired,
+  auth: PropTypes.shape.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  error: state.error,
+});
+
+export default connect(mapStateToProps, { dispatchRegister: register })(Registration);

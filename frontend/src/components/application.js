@@ -6,11 +6,7 @@
 import React from 'react';
 
 function Application() {
-  return (
-    <div>
-      <p>Application</p>
-    </div>
-  );
+  return <div>Application</div>;
 }
 
 export default Application;

@@ -1,5 +1,5 @@
-node_modules/
-build/
-public/
+node_modules
+build
+public
 reportWebVitals.js
 *.test.js
