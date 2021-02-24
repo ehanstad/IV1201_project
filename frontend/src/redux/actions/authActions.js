@@ -31,7 +31,7 @@ export const tokenConfig = (getState) => {
 
   // If token, add to headers
   if (token) {
-    config.headers['x-auth-token'] = token;
+    config.headers.Authorization = `Basic ${token}`;
   }
   return config;
 };
@@ -92,7 +92,7 @@ export const register = ({ fname, lname, ssn, email, uname, pass }) => (dispatch
 export const loadUser = () => (dispatch, getState) => {
   dispatch({ type: LOADING });
   axios
-    .get('/api/user/', tokenConfig(getState))
+    .get('/api/user/auth', tokenConfig(getState))
     .then((res) => {
       dispatch({
         type: AUTH_SUCCESS,
