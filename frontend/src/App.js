@@ -6,7 +6,6 @@
 import React, { useEffect } from 'react';
 import { Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import './App.css';
 import Registration from './components/registration';
 import Login from './components/login';
 import Admin from './components/admin';
