@@ -2,6 +2,7 @@ const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { setUser, getUser } = require('../../db/queries/user');
+const verify = require('../../middleware/verify');
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -53,20 +54,12 @@ router.post('/login', async (req, res) => {
     });
 });
 
-/*
-Verifies token in order to grant access to 'protected' routes
-If verification fails 'Access denied' is returned
-*/
-// const verify = function verifyToken(req, res, next) {
-//   const bearerHeader = req.headers.authorization;
-//   if (typeof bearerHeader !== 'undefined') {
-//     const bearer = bearerHeader.split(' ');
-//     const bearerToken = bearer[1];
-//     req.token = bearerToken;
-//     next();
-//   } else {
-//     res.status(403).json({ msg: 'Access denied' });
-//   }
-// };
+/**
+ * Gets user information if authenticated.
+ */
+router.get('/auth', verify, async (req, res) => {
+  const { user } = req.verified;
+  res.json(user);
+});
 
 module.exports = router;
