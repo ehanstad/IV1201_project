@@ -1,12 +1,26 @@
 const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { setUser, getUser } = require('../../db/queries/user');
+const { setUser, getUser, getUpdateInfo } = require('../../db/queries/user');
 const verify = require('../../middleware/verify');
 
 const secretKey = process.env.SECRET_KEY;
 
 const router = Router();
+
+/**
+ * Gets user info from database.
+ * Responds with either a success or error 500.
+ */
+router.post('/getUpdateInfo', async (req, res) => {
+  getUpdateInfo(req.body.email)
+    .then((dbRes) => {
+      res.json(dbRes[0]);
+    }).catch((dbErr) => {
+      console.log(dbErr);
+      res.status(500).json({ msg: 'Internal server error.' });
+    });
+});
 
 /**
  * Sends and adds user data to db module.

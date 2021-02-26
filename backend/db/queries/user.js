@@ -11,4 +11,9 @@ const setUser = async (name, surname, ssn, email, pass, username) => pool.query(
  */
 const getUser = async (username) => pool.query('SELECT * FROM person WHERE Username= $1', [username]).then((res) => res.rows);
 
-module.exports = { setUser, getUser };
+/*
+ * Returns the user with the corresponding username
+ */
+const getUpdateInfo = async (email) => pool.query('SELECT * FROM person WHERE email= $1', [email]).then((res) => res.rows);
+
+module.exports = { setUser, getUser, getUpdateInfo };

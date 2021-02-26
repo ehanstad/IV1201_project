@@ -10,6 +10,8 @@ import {
   LOGIN_FAIL,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
+  UPDATEINFO_SUCCESS,
+  UPDATEINFO_FAIL,
   LOADING,
   AUTH_SUCCESS,
   AUTH_FAIL,
@@ -103,6 +105,30 @@ export const register = ({ fname, lname, ssn, email, username, pass }) => (dispa
       dispatch(returnError(err.response.data.msg, err.response.status, REGISTER_FAIL));
       dispatch({
         type: REGISTER_FAIL,
+      });
+    });
+};
+
+/**
+ * Sends a request to the server and gets the info about what info is missing
+ * with the user with the email
+ * @param {Object} form_params The email input from the user.
+ */
+export const updateInfo = ({ email }) => (dispatch) => {
+  dispatch({ type: LOADING });
+  const body = JSON.stringify({ email });
+  axios
+    .post('/api/user/getUpdateInfo', body, tokenConfig())
+    .then((res) => {
+      dispatch({
+        type: UPDATEINFO_SUCCESS,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      dispatch(returnError(err.response.data.msg, err.response.status, UPDATEINFO_FAIL));
+      dispatch({
+        type: UPDATEINFO_FAIL,
       });
     });
 };
