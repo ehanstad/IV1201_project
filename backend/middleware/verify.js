@@ -1,11 +1,25 @@
+/**
+ * @file Authentication and authorization middleware
+ * @author Klas Engberg
+ * @author Lucas Villarroel
+ * @requires jwt
+ */
 const jwt = require('jsonwebtoken');
 
+/**
+ * Secret key for JWT
+ * @type {string}
+ * @const
+ */
 const secretKey = process.env.SECRET_KEY;
 
 /**
-* Verifies token in order to grant access to 'protected' routes
-* If verification fails 'Access denied' is returned
-*/
+ * Verifies token in order to grant access to 'protected' routes
+ * If verification fails either 'No token' or 'Invalid token' is returned
+ * @param {object} req - Express request object
+ * @param {object} res - Express respnse object
+ * @param {function} next - Express next middleware function
+ */
 const verify = function verifyToken(req, res, next) {
   const bearerHeader = req.headers.authorization;
 
@@ -23,10 +37,11 @@ const verify = function verifyToken(req, res, next) {
 };
 
 /**
- * Middleware handling applicant authorization.
- * @param {Object} req
- * @param {Object} res
- * @param {*} next
+ * Middleware handling applicant authorization. Will redirect to login
+ * on authorization fail.
+ * @param {object} req - Express request object
+ * @param {object} res - Express respnse object
+ * @param {function} next - Express next middleware function
  */
 const verifyApplicant = function verifyToken(req, res, next) {
   const bearerHeader = req.headers.authorization;
@@ -46,10 +61,11 @@ const verifyApplicant = function verifyToken(req, res, next) {
 };
 
 /**
- * Middleware handling recruiter authorization.
- * @param {Object} req
- * @param {Object} res
- * @param {*} next
+ * Middleware handling applicant authorization. Will redirect to login
+ * on authorization fail.
+ * @param {object} req - Express request object
+ * @param {object} res - Express respnse object
+ * @param {function} next - Express next middleware function
  */
 const verifyRecruiter = function verifyToken(req, res, next) {
   const bearerHeader = req.headers.authorization;
