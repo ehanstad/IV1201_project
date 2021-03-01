@@ -1,45 +1,40 @@
 /**
- * @file React base Component
- * @requires react-router-dom
+ * @file React Component responseble for updating old user
+ * information
+ * @requires react-redux
+ * @requires prop-types
+ * @requires react-bootstrap
  * @author Erik Hanstad
  */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Alert, Form, Card } from 'react-bootstrap';
+import { Button, Alert, Card } from 'react-bootstrap';
 import { updateInfo } from '../redux/actions/authActions';
+import UpdateUserForm from './updateUserForm';
 import { UPDATEINFO_FAIL } from '../redux/types';
 
-class OldUser extends Component {
+class UpdateUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
       email: '',
-      loading: false,
-      info: null,
+      message: null,
     };
   }
 
   componentDidUpdate(prevProps) {
-    const { error, auth } = this.props;
-    const { loading } = this.state;
+    const { error } = this.props;
     if (error !== prevProps.error) {
       if (error.id === UPDATEINFO_FAIL) {
         this.fail();
       }
     }
-    if (loading) {
-      this.setInfo(auth);
-    }
   }
 
   fail = () => {
-    this.setState({ info: 'Could not find user with written email' });
-  };
-
-  setInfo = (auth) => {
-    this.setState({ info: auth.updateInfo });
+    this.setState({ message: 'Could not find user with written email' });
   };
 
   /**
@@ -52,59 +47,46 @@ class OldUser extends Component {
   };
 
   /**
-   * placeholder
+   * gets the user from the corresponding email
    *
    * @param {button} e - The forms submit buttom
    */
-  update = (e) => {
+  getUser = (e) => {
     e.preventDefault();
     const { email } = this.state;
     const { dispatchOldUser } = this.props;
-    this.setState({ loading: true });
     dispatchOldUser({ email });
   };
 
   render() {
-    const { info } = this.state;
+    const { message } = this.state;
+
     return (
       <Card style={{ width: '40rem' }} className="mx-auto">
         <Card.Body>
           <h2>UPDATE OLD USER</h2>
-          {info ? (
+          {message ? (
             <Alert variant="danger" color="danger">
-              {info}
+              {message}
             </Alert>
           ) : null}
-          <Form onSubmit={this.update}>
-            <Form.Group>
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter email"
-                required
-                onChange={this.emailChange}
-              />
-            </Form.Group>
-            <Button type="submit">UPDATE</Button>
-            <Button variant="link" href="./registration">
-              Create a new account.
-            </Button>
-          </Form>
+          {UpdateUserForm}
+          <Button variant="link" href="./registration">
+            Create a new account.
+          </Button>
         </Card.Body>
       </Card>
     );
   }
 }
 
-OldUser.propTypes = {
+UpdateUser.propTypes = {
   dispatchOldUser: PropTypes.func.isRequired,
   error: PropTypes.shape.isRequired,
-  auth: PropTypes.shape.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  auth: state.auth,
   error: state.error,
 });
 
-export default connect(mapStateToProps, { dispatchOldUser: updateInfo })(OldUser);
+export default connect(mapStateToProps, { dispatchOldUser: updateInfo })(UpdateUser);

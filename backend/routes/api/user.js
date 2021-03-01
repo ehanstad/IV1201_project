@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { setUser, getUser, getUpdateInfo } = require('../../db/queries/user');
+const { setUser, getUser, getUpdateInfo, updateInfo } = require('../../db/queries/user');
 const verify = require('../../middleware/verify');
 
 const secretKey = process.env.SECRET_KEY;
@@ -20,6 +20,27 @@ router.post('/getUpdateInfo', async (req, res) => {
       console.log(dbErr);
       res.status(500).json({ msg: 'Internal server error.' });
     });
+});
+
+/**
+ * Gets user info from database.
+ * Responds with either a success or error 500.
+ */
+router.post('/updateInfo', async (req, res) => {
+  bcrypt.genSalt(10, (serr, salt) => {
+    if (serr) throw serr;
+    bcrypt.hash(req.body.password, salt, (herr, hash) => {
+      if (herr) throw herr;
+      updateInfo(req.body.email, req.body.name, req.body.surname, 
+        hash, req.body.ssn, req.body.username)
+        .then((dbRes) => {
+          console.log(dbRes);
+        }).catch((dbErr) => {
+          console.log(dbErr);
+          res.status(500).json({ msg: 'Internal server error.' });
+        });
+    });
+  });
 });
 
 /**
