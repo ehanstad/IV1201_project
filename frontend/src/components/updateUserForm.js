@@ -17,12 +17,11 @@ class UpdateUserForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: null,
-      name: null,
-      surname: null,
-      password: null,
-      ssn: null,
-      username: null,
+      name: '',
+      surname: '',
+      password: '',
+      ssn: '',
+      username: '',
     };
   }
 
@@ -73,81 +72,57 @@ class UpdateUserForm extends Component {
 
   update = (e) => {
     e.preventDefault();
+    const { auth } = this.props;
+    const { email } = auth.updateInfo;
+    const { name, surname, password, ssn, username } = this.state;
     const { dispatchUpdateUserForm } = this.props;
-    console.log(this.state);
-    dispatchUpdateUserForm(this.state);
+    dispatchUpdateUserForm({ email, name, surname, password, ssn, username });
   };
 
   render() {
     const { auth } = this.props;
-
-    let info = null;
+    let form = null;
     if (auth.updateInfo) {
-      this.setState({
-        email: auth.updateInfo.email,
-        name: auth.updateInfo.name,
-        surname: auth.updateInfo.surname,
-        password: auth.updateInfo.password,
-        ssn: auth.updateInfo.ssn,
-        username: auth.updateInfo.username,
-      });
-      info = (
-        <Form onSubmit={this.update}>
-          <Form.Group>
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder={auth.updateInfo.name}
-              required
-              onChange={this.nameChange}
-            />
-            <Form.Label>Surname</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder={auth.updateInfo.surname}
-              required
-              onChange={this.snameChange}
-            />
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" required onChange={this.passwordChange} />
-            <Form.Label>SSN</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder={auth.updateInfo.ssn}
-              required
-              onChange={this.ssnChange}
-            />
-            <Form.Label>Username</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder={auth.updateInfo.username}
-              required
-              onChange={this.usernameChange}
-            />
-          </Form.Group>
-        </Form>
+      form = (
+        <Form.Group>
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder={auth.updateInfo.name}
+            required
+            onChange={this.nameChange}
+          />
+          <Form.Label>Surname</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder={auth.updateInfo.surname}
+            required
+            onChange={this.snameChange}
+          />
+          <Form.Label>Password</Form.Label>
+          <Form.Control type="password" required onChange={this.passwordChange} />
+          <Form.Label>SSN</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder={auth.updateInfo.ssn}
+            required
+            onChange={this.ssnChange}
+          />
+          <Form.Label>Username</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder={auth.updateInfo.username}
+            required
+            onChange={this.usernameChange}
+          />
+        </Form.Group>
       );
     }
-
     return (
-      <div>
-        {info ? (
-          { info }
-        ) : (
-          <Form onSubmit={this.getUser}>
-            <Form.Group>
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter email"
-                required
-                onChange={this.emailChange}
-              />
-            </Form.Group>
-            <Button type="submit">UPDATE</Button>
-          </Form>
-        )}
-      </div>
+      <Form onSubmit={this.update}>
+        {form}
+        <Button type="submit">UPDATE</Button>
+      </Form>
     );
   }
 }

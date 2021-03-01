@@ -13,6 +13,7 @@ const router = Router();
  * Responds with either a success or error 500.
  */
 router.post('/getUpdateInfo', async (req, res) => {
+  console.log(req.body.email);
   getUpdateInfo(req.body.email)
     .then((dbRes) => {
       res.json(dbRes[0]);
@@ -31,10 +32,17 @@ router.post('/updateInfo', async (req, res) => {
     if (serr) throw serr;
     bcrypt.hash(req.body.password, salt, (herr, hash) => {
       if (herr) throw herr;
+      console.log(req.body.email);
+      console.log(req.body.name);
+      console.log(req.body.surname);
+      console.log(hash);
+      console.log(req.body.ssn);
+      console.log(req.body.username);
       updateInfo(req.body.email, req.body.name, req.body.surname, 
         hash, req.body.ssn, req.body.username)
         .then((dbRes) => {
           console.log(dbRes);
+          console.log("Här");
         }).catch((dbErr) => {
           console.log(dbErr);
           res.status(500).json({ msg: 'Internal server error.' });

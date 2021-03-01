@@ -143,7 +143,7 @@ export const updateUserInfo = ({ email, name, surname, password, ssn, username }
   const body = JSON.stringify({ email, name, surname, password, ssn, username });
   axios
     .post('/api/user/updateInfo', body, tokenConfig())
-    .then((res) => {
+    .then(() => {
       dispatch({
         type: UPDATEINFO_SUCCESS,
         payload: null,

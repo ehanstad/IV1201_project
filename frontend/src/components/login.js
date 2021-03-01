@@ -136,7 +136,7 @@ class Login extends Component {
               Create a new account.
             </Button>
             <inline> or</inline>
-            <Button variant="link" href="./oldUser">
+            <Button variant="link" href="./updateUser">
               Update old account.
             </Button>
           </Form>

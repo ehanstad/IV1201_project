@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Alert, Card } from 'react-bootstrap';
+import { Form, Button, Alert, Card } from 'react-bootstrap';
 import { updateInfo } from '../redux/actions/authActions';
 import UpdateUserForm from './updateUserForm';
 import { UPDATEINFO_FAIL } from '../redux/types';
@@ -38,9 +38,9 @@ class UpdateUser extends Component {
   };
 
   /**
-   * changes the state for the emial
+   * changes the state for the password
    *
-   * @param {input} e - The inputbox for the email
+   * @param {input} e - The inputbox for the password
    */
   emailChange = (e) => {
     this.setState({ email: e.target.value });
@@ -60,6 +60,7 @@ class UpdateUser extends Component {
 
   render() {
     const { message } = this.state;
+    const { auth } = this.props;
 
     return (
       <Card style={{ width: '40rem' }} className="mx-auto">
@@ -70,7 +71,22 @@ class UpdateUser extends Component {
               {message}
             </Alert>
           ) : null}
-          {UpdateUserForm}
+          {auth.updateInfo ? (
+            <UpdateUserForm />
+          ) : (
+            <Form onSubmit={this.getUser}>
+              <Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter email"
+                  required
+                  onChange={this.emailChange}
+                />
+              </Form.Group>
+              <Button type="submit">UPDATE</Button>
+            </Form>
+          )}
           <Button variant="link" href="./registration">
             Create a new account.
           </Button>
@@ -83,10 +99,12 @@ class UpdateUser extends Component {
 UpdateUser.propTypes = {
   dispatchOldUser: PropTypes.func.isRequired,
   error: PropTypes.shape.isRequired,
+  auth: PropTypes.shape.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   error: state.error,
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps, { dispatchOldUser: updateInfo })(UpdateUser);
