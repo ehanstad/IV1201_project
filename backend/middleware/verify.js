@@ -70,16 +70,16 @@ const verifyApplicant = function verifyToken(req, res, next) {
 const verifyRecruiter = function verifyToken(req, res, next) {
   const bearerHeader = req.headers.authorization;
 
-  if (!bearerHeader) { res.status(401).json({ msg: 'No token' }); } else {
+  if (!bearerHeader) { res.status(401).redirect('/'); } else {
     const bearer = bearerHeader.split(' ');
     const bearerToken = bearer[1];
     try {
       const auth = jwt.verify(bearerToken, secretKey);
-      if (auth.user.rid !== '1') { res.status(401).json({ msg: 'Unauthorized' }); }
+      if (auth.user.rid !== '1') { res.status(401).redirect('/'); }
       req.token = auth;
       next();
     } catch (err) {
-      res.status(400).json({ msg: 'Invalid token' });
+      res.status(401).redirect('/');
     }
   }
 };
