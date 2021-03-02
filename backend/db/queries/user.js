@@ -3,8 +3,20 @@ const { pool } = require('../db');
 /*
  * Creates a new user and inserts user data to the person table
  */
-const setUser = async (name, surname, ssn, email, pass, username) => pool.query('INSERT INTO person (Name, Surname, Ssn, Email, Role_id, Password, Username) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-  [name, surname, ssn, email, 2, pass, username]).then((res) => res);
+const setUser = async (name, surname, ssn, email, pass, username) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const queryText = 'INSERT INTO person (Name, Surname, Ssn, Email, Role_id, Password, Username) VALUES ($1, $2, $3, $4, $5, $6, $7)';
+    client.query(queryText, [name, surname, ssn, email, 2, pass, username]);
+    await client.query('COMMIT');
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
+};
 
 /*
  * Returns the user with the corresponding username
