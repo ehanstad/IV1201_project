@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Alert, Card } from 'react-bootstrap';
-import { updateInfo } from '../redux/actions/authActions';
+import { updateInfo } from '../redux/actions/updateActions';
 import UpdateUserForm from './updateUserForm';
 import { UPDATEINFO_FAIL } from '../redux/types';
 
@@ -33,6 +33,9 @@ class UpdateUser extends Component {
     }
   }
 
+  /**
+   * changes the state of the message to a failed message
+   */
   fail = () => {
     this.setState({ message: 'Could not find user with written email' });
   };
@@ -60,7 +63,7 @@ class UpdateUser extends Component {
 
   render() {
     const { message } = this.state;
-    const { auth } = this.props;
+    const { update } = this.props;
 
     return (
       <Card style={{ width: '40rem' }} className="mx-auto">
@@ -71,7 +74,7 @@ class UpdateUser extends Component {
               {message}
             </Alert>
           ) : null}
-          {auth.updateInfo ? (
+          {update.updateInfo ? (
             <UpdateUserForm />
           ) : (
             <Form onSubmit={this.getUser}>
@@ -99,12 +102,12 @@ class UpdateUser extends Component {
 UpdateUser.propTypes = {
   dispatchOldUser: PropTypes.func.isRequired,
   error: PropTypes.shape.isRequired,
-  auth: PropTypes.shape.isRequired,
+  update: PropTypes.shape.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   error: state.error,
-  auth: state.auth,
+  update: state.update,
 });
 
 export default connect(mapStateToProps, { dispatchOldUser: updateInfo })(UpdateUser);

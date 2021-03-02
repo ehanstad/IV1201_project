@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form } from 'react-bootstrap';
-import { updateUserInfo } from '../redux/actions/authActions';
+import { updateUserInfo } from '../redux/actions/updateActions';
 
 class UpdateUserForm extends Component {
   constructor(props) {
@@ -72,30 +72,30 @@ class UpdateUserForm extends Component {
 
   update = (e) => {
     e.preventDefault();
-    const { auth } = this.props;
-    const { email } = auth.updateInfo;
+    const { update } = this.props;
+    const { email } = update.updateInfo;
     const { name, surname, password, ssn, username } = this.state;
     const { dispatchUpdateUserForm } = this.props;
     dispatchUpdateUserForm({ email, name, surname, password, ssn, username });
   };
 
   render() {
-    const { auth } = this.props;
+    const { update } = this.props;
     let form = null;
-    if (auth.updateInfo) {
+    if (update.updateInfo) {
       form = (
         <Form.Group>
           <Form.Label>Name</Form.Label>
           <Form.Control
             type="text"
-            placeholder={auth.updateInfo.name}
+            placeholder={update.updateInfo.name}
             required
             onChange={this.nameChange}
           />
           <Form.Label>Surname</Form.Label>
           <Form.Control
             type="text"
-            placeholder={auth.updateInfo.surname}
+            placeholder={update.updateInfo.surname}
             required
             onChange={this.snameChange}
           />
@@ -104,14 +104,14 @@ class UpdateUserForm extends Component {
           <Form.Label>SSN</Form.Label>
           <Form.Control
             type="text"
-            placeholder={auth.updateInfo.ssn}
+            placeholder={update.updateInfo.ssn}
             required
             onChange={this.ssnChange}
           />
           <Form.Label>Username</Form.Label>
           <Form.Control
             type="text"
-            placeholder={auth.updateInfo.username}
+            placeholder={update.updateInfo.username}
             required
             onChange={this.usernameChange}
           />
@@ -129,11 +129,11 @@ class UpdateUserForm extends Component {
 
 UpdateUserForm.propTypes = {
   dispatchUpdateUserForm: PropTypes.func.isRequired,
-  auth: PropTypes.shape.isRequired,
+  update: PropTypes.shape.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  auth: state.auth,
+  update: state.update,
 });
 
 export default connect(mapStateToProps, { dispatchUpdateUserForm: updateUserInfo })(UpdateUserForm);

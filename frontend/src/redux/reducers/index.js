@@ -6,6 +6,7 @@
 import { combineReducers } from 'redux';
 import authReducer from './authReducer';
 import errorReducer from './errorReducer';
+import updateReducer from './updateReducer';
 
 /**
  * Combine all reducers, export root reducer.
@@ -13,4 +14,5 @@ import errorReducer from './errorReducer';
 export default combineReducers({
   auth: authReducer,
   error: errorReducer,
+  update: updateReducer,
 });

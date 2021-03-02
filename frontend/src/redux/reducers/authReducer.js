@@ -7,8 +7,6 @@ import {
   REGISTER_SUCCESS,
   LOGIN_FAIL,
   REGISTER_FAIL,
-  UPDATEINFO_SUCCESS,
-  UPDATEINFO_FAIL,
   LOADING,
   AUTH_SUCCESS,
   AUTH_FAIL,
@@ -22,7 +20,6 @@ const initialState = {
   isAuthenticated: null,
   user: null,
   loading: false,
-  updateInfo: null,
 };
 
 /**
@@ -53,13 +50,6 @@ export default function (state = initialState, action) {
       };
     case AUTH_FAIL:
     case REGISTER_SUCCESS:
-    case UPDATEINFO_SUCCESS:
-      return {
-        ...state,
-        updateInfo: action.payload,
-        loading: false,
-      };
-    case UPDATEINFO_FAIL:
     case LOGIN_FAIL:
     case REGISTER_FAIL:
       return {
