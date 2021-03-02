@@ -18,8 +18,6 @@ const {
 } = require('../../db/queries/user');
 const { verify } = require('../../middleware/verify');
 
-const secretKey = process.env.SECRET_KEY;
-
 /**
  * Express router to mount user related functions on.
  * @type {object}
