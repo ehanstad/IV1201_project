@@ -1,6 +1,5 @@
 /**
  * @file Express application
- * @author Klas Engberg
  * @author Lucas Villarroel
  * @requires dotenv
  * @requires http-errors
@@ -14,7 +13,7 @@ const path = require('path');
 const User = require('./routes/api/user');
 const Application = require('./routes/api/application');
 const Admin = require('./routes/api/admin');
-const { verifyApplicant } = require('./middleware/verify');
+const { verifyApplicant, verifyRecruiter } = require('./middleware/verify');
 
 /**
  * Express application
@@ -37,7 +36,8 @@ app.use('/api/admin', Admin);
 /**
  * Use middleware for protected routes
  */
-app.use('/application', verifyApplicant);
+app.use('/applicant', verifyApplicant);
+app.use('/recruiter', verifyRecruiter);
 
 /**
  * Serve static files
