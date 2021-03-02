@@ -1,7 +1,12 @@
 const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { setUser, getUser, getUpdateInfo, updateInfo } = require('../../db/queries/user');
+const {
+  setUser,
+  getUser,
+  getUpdateInfo,
+  updateInfo,
+} = require('../../db/queries/user');
 const verify = require('../../middleware/verify');
 
 const secretKey = process.env.SECRET_KEY;
@@ -31,7 +36,7 @@ router.post('/updateInfo', async (req, res) => {
     if (serr) throw serr;
     bcrypt.hash(req.body.password, salt, (herr, hash) => {
       if (herr) throw herr;
-      updateInfo(req.body.email, req.body.name, req.body.surname, 
+      updateInfo(req.body.email, req.body.name, req.body.surname,
         hash, req.body.ssn, req.body.username)
         .then(() => {
           res.json({ msg: 'Info updated' });

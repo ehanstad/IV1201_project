@@ -19,7 +19,12 @@ const getUpdateInfo = async (email) => pool.query('SELECT * FROM person WHERE em
 /*
  * Updates the user with new data
  */
-const updateInfo = async (email, name, surname, password, ssn, username) => pool.query('UPDATE person SET name=$1, surname=$2, password=$3, ssn=$4, username=$5 WHERE email= $6', 
+const updateInfo = async (email, name, surname, password, ssn, username) => pool.query('UPDATE person SET name=$1, surname=$2, password=$3, ssn=$4, username=$5 WHERE email= $6',
   [name, surname, password, ssn, username, email]).then((res) => res.rows);
 
-module.exports = { setUser, getUser, getUpdateInfo, updateInfo };
+module.exports = {
+  setUser,
+  getUser,
+  getUpdateInfo,
+  updateInfo,
+};
