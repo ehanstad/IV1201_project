@@ -1,16 +1,36 @@
+/**
+ * @file API endpoints regarding users
+ * @author Klas Engberg
+ * @author Lucas Villarroel
+ * @requires express
+ * @requires bcrypt
+ * @requires jwt
+ */
 const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { setUser, getUser } = require('../../db/queries/user');
-const verify = require('../../middleware/verify');
+const { verify } = require('../../middleware/verify');
 
-const secretKey = process.env.SECRET_KEY;
-
+/**
+ * Express router to mount user related functions on.
+ * @type {object}
+ * @const
+ */
 const router = Router();
+
+/**
+ * Secret key for JWT
+ * @type {string}
+ * @const
+ */
+const secretKey = process.env.SECRET_KEY;
 
 /**
  * Sends and adds user data to db module.
  * Responds with either a success or error 500.
+ * @param {string} path - Express path
+ * @param {function} callback - Express middleware
  */
 router.post('/register', (req, res) => {
   bcrypt.genSalt(10, (serr, salt) => {
@@ -33,6 +53,8 @@ router.post('/register', (req, res) => {
  * Method for login
  * Compares password with hashed password from DB
  * Returns JWT with users id and role id
+ * @param {string} path - Express path
+ * @param {function} callback - Express middleware
  */
 router.post('/login', async (req, res) => {
   getUser(req.body.uname, req.body.pass)
@@ -55,7 +77,10 @@ router.post('/login', async (req, res) => {
 });
 
 /**
- * Gets user information if authenticated.
+ * Route to get authenticated user information.
+ * @param {string} path - Express path
+ * @param {function} middleware - Authentication middleware function
+ * @param {function} callback - Express middleware
  */
 router.get('/auth', verify, async (req, res) => {
   const { user } = req.token;
