@@ -13,6 +13,7 @@ import {
   LOADING,
   AUTH_SUCCESS,
   AUTH_FAIL,
+  LOGOUT_SUCCESS,
 } from '../types';
 
 export const tokenConfig = (getState) => {
@@ -82,6 +83,11 @@ export const login = ({ uname, pass }) => (dispatch) => {
       });
     });
 };
+
+/**
+ * De-authenticates the user.
+ */
+export const logout = () => ({ type: LOGOUT_SUCCESS });
 
 /**
  * Sends a request to the server to try and register a user. Dispatches actions to
