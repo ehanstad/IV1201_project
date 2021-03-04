@@ -31,7 +31,7 @@ router.post('/register', async (req, res) => {
  */
 router.post('/competence', async (req, res) => {
   selectCompetence().then((dbRes) => {
-    res.json(dbRes);
+    res.json(dbRes.rows);
   }).catch((dbErr) => {
     console.log(dbErr);
     res.status(500).json({ msg: 'Internal server error.' });

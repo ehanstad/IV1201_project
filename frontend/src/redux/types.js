@@ -8,6 +8,9 @@ export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const REGISTER_FAIL = 'REGISTER_FAIL';
 export const LOADING = 'LOADING';
 
+export const COMPETENCE_SUCCESS = 'COMPETENCE_SUCCESS';
+export const COMPETENCE_FAIL = 'COMPETENCE_FAIL';
+
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
 export const AUTH_FAIL = 'AUTH_FAIL';
 
