@@ -3,12 +3,12 @@ const { pool } = require('../db');
 /*
  * Returns the competence id with the corresponding competence name
  */
-const getCompetence = async () => pool.query('SELECT * FROM competence').then((res) => res);
+const selectCompetence = async () => pool.query('SELECT * FROM competence').then((res) => res);
 
 /*
  * Creates a new application and inserts application data to the person table
  */
-const createApplication = async (competenceId, personId, yearsOfExperience) => {
+const insertCompetenceProfile = async (competenceId, personId, yearsOfExperience) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -26,7 +26,7 @@ const createApplication = async (competenceId, personId, yearsOfExperience) => {
 /*
  *  Inserts availabilty data to the availability table
  */
-const createAvailability = async (fromDate, toDate, pid) => {
+const insertAvailability = async (fromDate, toDate, pid) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -41,4 +41,4 @@ const createAvailability = async (fromDate, toDate, pid) => {
   }
 };
 
-module.exports = { getCompetence, createApplication, createAvailability };
+module.exports = { selectCompetence, insertCompetenceProfile, insertAvailability };

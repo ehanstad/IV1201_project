@@ -3,7 +3,7 @@ const { pool } = require('../db');
 /*
  * Creates a new user and inserts user data to the person table
  */
-const setUser = async (name, surname, ssn, email, pass, username) => {
+const insertPerson = async (name, surname, ssn, email, pass, username) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -21,6 +21,6 @@ const setUser = async (name, surname, ssn, email, pass, username) => {
 /*
  * Returns the user with the corresponding username
  */
-const getUser = async (username) => pool.query('SELECT * FROM person WHERE Username= $1', [username]).then((res) => res.rows);
+const selectUser = async (username) => pool.query('SELECT * FROM person WHERE Username= $1', [username]).then((res) => res.rows);
 
-module.exports = { setUser, getUser };
+module.exports = { insertPerson, selectUser };
