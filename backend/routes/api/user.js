@@ -3,16 +3,26 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { setUser, getUser } = require('../../db/queries/user');
 const verify = require('../../middleware/verify');
+const { body, validationResult } = require('express-validator');
 
 const secretKey = process.env.SECRET_KEY;
-
 const router = Router();
 
 /**
  * Sends and adds user data to db module.
  * Responds with either a success or error 500.
  */
-router.post('/register', (req, res) => {
+router.post('/register', 
+body('fname').not().isEmpty().trim().escape().isAlpha('sv-SE'),
+body('lname').not().isEmpty().trim().escape().isAlpha('sv-SE'),
+body('ssn').not().isEmpty().trim().escape().isNumeric(),
+body('email').not().isEmpty().trim().escape().isEmail(),
+body('username').not().isEmpty().trim().escape(),
+body('pass').not().isEmpty().trim().escape(),
+(req, res) => {
+  if (!validationResult(req).isEmpty()) {
+    res.status(500).json({ msg: 'Faulty data entered'});
+  } else {
   bcrypt.genSalt(10, (serr, salt) => {
     if (serr) throw serr;
     bcrypt.hash(req.body.pass, salt, (herr, hash) => {
@@ -26,7 +36,8 @@ router.post('/register', (req, res) => {
           res.status(500).json({ msg: 'Internal server error.' });
         });
     });
-  });
+    });
+  }
 });
 
 /**
@@ -34,7 +45,7 @@ router.post('/register', (req, res) => {
  * Compares password with hashed password from DB
  * Returns JWT with users id and role id
  */
-router.post('/login', async (req, res) => {
+router.post('/login', body('uname').escape(), body('pass').escape(), async (req, res) => {
   getUser(req.body.uname, req.body.pass)
     .then((dbRes) => {
       bcrypt.compare(req.body.pass, dbRes[0].password).then((result) => {

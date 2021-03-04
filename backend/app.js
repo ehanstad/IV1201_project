@@ -1,10 +1,12 @@
 // module dependencies
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const User = require('./routes/api/user');
 const Application = require('./routes/api/application');
 const Admin = require('./routes/api/admin');
+
 
 // create exrpess application
 const app = express();
