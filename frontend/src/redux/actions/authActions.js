@@ -64,8 +64,10 @@ export const loadUser = () => (dispatch, getState) => {
  * trigger state changes based on success/fail.
  * @param {Object} form_params The login information entered by the user.
  */
-export const login = ({ uname, pass }) => (dispatch) => {
-  const body = JSON.stringify({ uname, pass });
+export const login = ({ username, password }) => (dispatch) => {
+  console.log(username);
+  console.log(password);
+  const body = JSON.stringify({ username, password });
   axios
     .post('/api/user/login', body, tokenConfig())
     .then((res) => {
@@ -77,7 +79,7 @@ export const login = ({ uname, pass }) => (dispatch) => {
       ).then(() => dispatch(loadUser()));
     })
     .catch((err) => {
-      dispatch(returnError(err.response.data.msg, err.response.status, LOGIN_FAIL));
+      dispatch(returnError('Incorrect username or password.', err.response.status, LOGIN_FAIL));
       dispatch({
         type: LOGIN_FAIL,
       });
@@ -94,9 +96,9 @@ export const logout = () => ({ type: LOGOUT_SUCCESS });
  * trigger state changes based on success/fail.
  * @param {Object} form_params The registration information entered by user.
  */
-export const register = ({ fname, lname, ssn, email, username, pass }) => (dispatch) => {
+export const register = ({ fname, lname, ssn, email, username, password }) => (dispatch) => {
   dispatch({ type: LOADING });
-  const body = JSON.stringify({ fname, lname, ssn, email, username, pass });
+  const body = JSON.stringify({ fname, lname, ssn, email, username, password });
   axios
     .post('/api/user/register', body, tokenConfig())
     .then((res) => {
@@ -106,7 +108,13 @@ export const register = ({ fname, lname, ssn, email, username, pass }) => (dispa
       });
     })
     .catch((err) => {
-      dispatch(returnError(err.response.data.msg, err.response.status, REGISTER_FAIL));
+      dispatch(
+        returnError(
+          'A user with that username or email already exists.',
+          err.response.status,
+          REGISTER_FAIL,
+        ),
+      );
       dispatch({
         type: REGISTER_FAIL,
       });
