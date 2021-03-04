@@ -9,7 +9,7 @@
 const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { setUser, getUser } = require('../../db/queries/user');
+const { insertPerson, selectUser } = require('../../db/queries/user');
 const { verify } = require('../../middleware/verify');
 
 /**
@@ -37,7 +37,7 @@ router.post('/register', (req, res) => {
     if (serr) throw serr;
     bcrypt.hash(req.body.pass, salt, (herr, hash) => {
       if (herr) throw herr;
-      setUser(req.body.fname, req.body.lname, req.body.ssn, req.body.email, hash,
+      insertPerson(req.body.fname, req.body.lname, req.body.ssn, req.body.email, hash,
         req.body.username)
         .then(() => {
           res.json({ msg: 'user added' });
@@ -57,7 +57,7 @@ router.post('/register', (req, res) => {
  * @param {function} callback - Express middleware
  */
 router.post('/login', async (req, res) => {
-  getUser(req.body.uname, req.body.pass)
+  selectUser(req.body.uname, req.body.pass)
     .then((dbRes) => {
       bcrypt.compare(req.body.pass, dbRes[0].password).then((result) => {
         if (result) {
