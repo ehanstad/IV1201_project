@@ -4,13 +4,14 @@
  * @author Lucas Villarroel
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Alert, Form, Card } from 'react-bootstrap';
 import { login } from '../redux/actions/authActions';
 import { clearError } from '../redux/actions/errorActions';
+import { LOGIN_FAIL } from '../redux/types';
 
 function Login() {
   /**
@@ -23,7 +24,6 @@ function Login() {
    */
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [prevError, setPrevError] = useState('');
 
   /**
    * Subscribe to global states.
@@ -32,22 +32,9 @@ function Login() {
   const error = useSelector((state) => state.error);
 
   /**
-   * Handles state changes based on login success.
-   */
-  useEffect(() => {
-    if (!auth.loading) {
-      if (error.id !== prevError) {
-        if (error.id !== 'LOGIN_FAIL') {
-          dispatch(clearError());
-        }
-      }
-      setPrevError(error.id);
-    }
-  }, [error.id, auth.loading, prevError, dispatch]);
-
-  /**
-   * Handles login based on form parameters.
-   * @param {button} e - Event
+   * Dispatches login action based on form parameters.
+   * Will prevent empty fields
+   * @param {object} e - Event
    */
   const handleLogin = (e) => {
     e.preventDefault();
@@ -62,44 +49,57 @@ function Login() {
     if (auth.user.rid === '2') {
       return <Redirect to="/applicant" />;
     }
+  } else if (auth.user) {
+    return <Redirect to="/old/update" />;
+  }
+
+  /**
+   * Generate status alert of login.
+   */
+  let message;
+  if (error.id === LOGIN_FAIL) {
+    message = (
+      <Alert variant="danger" color="danger">
+        {error.message}
+      </Alert>
+    );
   }
 
   return (
-    <Card style={{ width: '40rem' }} className="mx-auto">
-      <Card.Body>
-        <h2>Login</h2>
-        {error.status ? (
-          <Alert variant="danger" color="danger">
-            {error.message}
-          </Alert>
-        ) : null}
-        <Form onSubmit={handleLogin}>
-          <Form.Group>
-            <Form.Label>Username</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter username"
-              required
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Enter password"
-              required
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Form.Group>
-          <Button type="submit">LOGIN</Button>
-          <inline> or</inline>
-          <Button variant="link" href="./registration">
-            Create a new account.
-          </Button>
-        </Form>
-      </Card.Body>
-    </Card>
+    <>
+      <Card style={{ width: '40rem' }} className="mx-auto">
+        <Card.Body>
+          <h2>Login</h2>
+          {message}
+          <Form onSubmit={handleLogin}>
+            <Form.Group>
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter username"
+                required
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Enter password"
+                required
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="on"
+              />
+            </Form.Group>
+            <Button type="submit">LOGIN</Button>
+            <inline> or</inline>
+            <Button variant="link" href="./registration">
+              Create a new account.
+            </Button>
+          </Form>
+        </Card.Body>
+      </Card>
+    </>
   );
 }
 

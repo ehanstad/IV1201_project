@@ -3,12 +3,13 @@
  * @author Erik Hanstad
  * @author Lucas Villarroel
  */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Alert, Form, Card } from 'react-bootstrap';
 import { register } from '../redux/actions/authActions';
-import { clearError } from '../redux/actions/errorActions';
+import { REGISTER_FAIL, REGISTER_SUCCESS } from '../redux/types';
 
 function Registration() {
   /**
@@ -25,8 +26,6 @@ function Registration() {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [prevError, setPrevError] = useState('');
-  const [status, setStatus] = useState({ message: null, loading: false });
 
   /**
    * Subscribe to global states.
@@ -35,57 +34,43 @@ function Registration() {
   const error = useSelector((state) => state.error);
 
   /**
-   * Sets states on registration success.
-   */
-  const registerSuccess = () => {
-    setStatus({ message: 'Account created successfully.', loading: false });
-  };
-
-  /**
-   * Handles state changes based on registration status.
-   */
-  useEffect(() => {
-    if (error.id !== prevError) {
-      if (error.id === 'REGISTER_FAIL') {
-        setStatus({ message: error.message, loading: false });
-      } else {
-        dispatch(clearError());
-      }
-      setPrevError(error.id);
-    }
-    if (status.loading) {
-      if (!auth.loading) {
-        registerSuccess();
-      }
-    }
-  }, [error, auth.loading, prevError, dispatch, status]);
-
-  /**
    * Adds the applicants information to a database
    *
    * @param {button} e - The forms submitbutton
    */
   const addApplicant = (e) => {
     e.preventDefault();
-    setStatus({ message: null, loading: true });
-    dispatch(clearError());
     dispatch(register({ fname, lname, ssn, email, username, password }));
   };
+
+  if (auth.isAuthenticated) {
+    if (auth.user.rid === '1') {
+      return <Redirect to="/recruiter" />;
+    }
+    if (auth.user.rid === '2') {
+      return <Redirect to="/applicant" />;
+    }
+  }
+
+  /**
+   * Generate status alert of registration.
+   */
+  let message;
+  switch (error.id) {
+    case REGISTER_FAIL:
+      message = <Alert variant="danger">{error.message}</Alert>;
+      break;
+    case REGISTER_SUCCESS:
+      message = <Alert variant="success">{error.message}</Alert>;
+      break;
+    default:
+  }
 
   return (
     <Card style={{ width: '40rem' }} className="mx-auto">
       <Card.Body>
         <h2>Registration</h2>
-        {
-          // eslint-disable-next-line no-nested-ternary
-          status.message ? (
-            error.status ? (
-              <Alert variant="danger">{status.message}</Alert>
-            ) : (
-              <Alert variant="success">{status.message}</Alert>
-            )
-          ) : null
-        }
+        {message}
         <Form onSubmit={addApplicant}>
           <Form.Group>
             <Form.Label>First name</Form.Label>
