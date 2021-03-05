@@ -14,6 +14,8 @@ import {
   AUTH_SUCCESS,
   AUTH_FAIL,
   LOGOUT_SUCCESS,
+  UPDATE_OLD_USER_SUCCESS,
+  UPDATE_OLD_USER_FAIL,
 } from '../types';
 
 export const tokenConfig = (getState) => {
@@ -65,8 +67,6 @@ export const loadUser = () => (dispatch, getState) => {
  * @param {Object} form_params The login information entered by the user.
  */
 export const login = ({ username, password }) => (dispatch) => {
-  console.log(username);
-  console.log(password);
   const body = JSON.stringify({ username, password });
   axios
     .post('/api/user/login', body, tokenConfig())
@@ -102,6 +102,7 @@ export const register = ({ fname, lname, ssn, email, username, password }) => (d
   axios
     .post('/api/user/register', body, tokenConfig())
     .then((res) => {
+      dispatch(returnError('Account created successfully.', 200, REGISTER_SUCCESS));
       dispatch({
         type: REGISTER_SUCCESS,
         payload: res.data,
@@ -117,6 +118,31 @@ export const register = ({ fname, lname, ssn, email, username, password }) => (d
       );
       dispatch({
         type: REGISTER_FAIL,
+      });
+    });
+};
+
+/**
+ * Sends a request to the server to try and register a user. Dispatches actions to
+ * trigger state changes based on success/fail.
+ * @param {Object} form_params The registration information entered by user.
+ */
+export const updateOldUser = ({ name, surname, ssn, email, username, password }) => (dispatch) => {
+  dispatch({ type: LOADING });
+  const body = JSON.stringify({ name, surname, ssn, email, username, password });
+  axios
+    .patch('/api/user/old', body, tokenConfig())
+    .then((res) => {
+      dispatch(returnError('Account updated.', 200, UPDATE_OLD_USER_SUCCESS));
+      dispatch({
+        type: UPDATE_OLD_USER_SUCCESS,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      dispatch(returnError('Invalid password.', err.response.status, UPDATE_OLD_USER_FAIL));
+      dispatch({
+        type: UPDATE_OLD_USER_FAIL,
       });
     });
 };
