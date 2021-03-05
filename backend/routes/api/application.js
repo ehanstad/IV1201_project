@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { insertCompetenceProfile, selectCompetence, insertAvailability } = require('../../db/queries/application');
+const { insertApplication, selectCompetence } = require('../../db/queries/application');
 
 const router = Router();
 
@@ -9,20 +9,13 @@ const router = Router();
  */
 router.post('/register', async (req, res) => {
   let err = false;
-  req.body.com.map((comp) => insertCompetenceProfile(comp.cid, req.body.pid, comp.yoe)
-    .catch((dbErr) => {
-      console.log(dbErr);
-      err = true;
-      res.status(500).json({ msg: 'Internal server error.' });
-    }));
-  if (!err) {
-    insertAvailability(req.body.fromDate, req.body.toDate, req.body.pid).then(() => {
-      res.json({ msg: 'application added' });
-    }).catch((dbErr) => {
-      console.log(dbErr);
+  console.log(req.body);
+  insertApplication(req.body.competences, req.body.availability, req.body.id).then(() => {
+    res.json({ msg: 'application added' });
+  }) .catch((err) => {
+      console.log(err);
       res.status(500).json({ msg: 'Internal server error.' });
     });
-  }
 });
 
 /**

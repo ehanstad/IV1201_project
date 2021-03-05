@@ -33,13 +33,13 @@ export const getCompetence = () => (dispatch, getState) => {
  * Sends a request to verify the user with token.
  * @param {Object} form_params The registration information entered by user.
  */
-export const sendApplication = ({ competences, startDate, endDate }) => (dispatch, getState) => {
+export const sendApplication = ({ competences, availability, id }) => (dispatch, getState) => {
   dispatch({ type: LOADING });
-  const body = JSON.stringify({ competences, startDate, endDate });
+  const body = JSON.stringify({ competences, availability, id });
   console.log(body);
   console.log(getState);
-  /*  axios
-    .get('/api/application/register', body, tokenConfig(getState))
+  axios
+    .post('/api/application/register', body, tokenConfig(getState))
     .then((res) => {
       dispatch({
         type: COMPETENCE_SUCCESS,
@@ -51,5 +51,5 @@ export const sendApplication = ({ competences, startDate, endDate }) => (dispatc
       dispatch({
         type: COMPETENCE_FAIL,
       });
-    }); */
+    });
 };
