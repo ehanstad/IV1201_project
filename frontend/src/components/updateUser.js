@@ -2,112 +2,171 @@
  * @file React Component responseble for updating old user
  * information
  * @requires react-redux
- * @requires prop-types
  * @requires react-bootstrap
  * @author Erik Hanstad
+ * @author Lucas Villarroel <lucasvi@kth.se>
  */
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { PropTypes } from 'prop-types';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button, Alert, Card } from 'react-bootstrap';
-import { updateInfo } from '../redux/actions/updateActions';
-import UpdateUserForm from './updateUserForm';
-import { UPDATEINFO_FAIL } from '../redux/types';
+import { Form, Button, Card, Alert } from 'react-bootstrap';
+import { updateOldUser } from '../redux/actions/authActions';
+import { clearError } from '../redux/actions/errorActions';
+import { UPDATE_OLD_USER_FAIL, UPDATE_OLD_USER_SUCCESS } from '../redux/types';
 
-class UpdateUser extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      message: null,
-    };
-  }
+function UpdateUser() {
+  /**
+   * Action dispatcher.
+   */
+  const dispatch = useDispatch();
 
-  componentDidUpdate(prevProps) {
-    const { error } = this.props;
-    if (error !== prevProps.error) {
-      if (error.id === UPDATEINFO_FAIL) {
-        this.fail();
+  /**
+   * Local states
+   */
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [ssn, setSsn] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  /**
+   * Subscribe to global states.
+   */
+  const auth = useSelector((state) => state.auth);
+  const error = useSelector((state) => state.error);
+
+  /**
+   * Dispatches update old user action based on form parameters.
+   * Will prevent empty fields
+   * @param {object} e - Event
+   */
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { username } = auth.user;
+    dispatch(clearError());
+    dispatch(updateOldUser({ username, name, surname, ssn, email, password }));
+  };
+
+  if (auth.user) {
+    if (auth.user.name) {
+      if (auth.user.name !== name) {
+        setName(auth.user.name);
       }
     }
+    if (auth.user.surname) {
+      if (auth.user.surname !== surname) {
+        setSurname(auth.user.surname);
+      }
+    }
+    if (auth.user.ssn) {
+      if (auth.user.ssn !== ssn) {
+        setSsn(auth.user.ssn);
+      }
+    }
+    if (auth.user.email) {
+      if (auth.user.email !== email) {
+        setEmail(auth.user.email);
+      }
+    }
+  } else {
+    return <Redirect to="/" />;
   }
 
   /**
-   * changes the state of the message to a failed message
+   * Generate status alert of update.
    */
-  fail = () => {
-    this.setState({ message: 'Could not find user with written email' });
-  };
+  let message;
+  switch (error.id) {
+    case UPDATE_OLD_USER_FAIL:
+      message = (
+        <Alert variant="danger" color="danger">
+          {error.message}
+        </Alert>
+      );
+      break;
+    case UPDATE_OLD_USER_SUCCESS:
+      message = (
+        <Alert variant="success" color="success">
+          {error.message}
+        </Alert>
+      );
+      break;
+    default:
+  }
 
-  /**
-   * changes the state for the password
-   *
-   * @param {input} e - The inputbox for the password
-   */
-  emailChange = (e) => {
-    this.setState({ email: e.target.value });
-  };
-
-  /**
-   * gets the user from the corresponding email
-   *
-   * @param {button} e - The forms submit buttom
-   */
-  getUser = (e) => {
-    e.preventDefault();
-    const { email } = this.state;
-    const { dispatchOldUser } = this.props;
-    dispatchOldUser({ email });
-  };
-
-  render() {
-    const { message } = this.state;
-    const { update } = this.props;
-
-    return (
+  return (
+    <>
       <Card style={{ width: '40rem' }} className="mx-auto">
         <Card.Body>
-          <h2>UPDATE OLD USER</h2>
-          {message ? (
-            <Alert variant="danger" color="danger">
-              {message}
-            </Alert>
-          ) : null}
-          {update.updateInfo ? (
-            <UpdateUserForm />
-          ) : (
-            <Form onSubmit={this.getUser}>
-              <Form.Group>
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter email"
-                  required
-                  onChange={this.emailChange}
-                />
-              </Form.Group>
-              <Button type="submit">UPDATE</Button>
-            </Form>
-          )}
-          <Button variant="link" href="./registration">
-            Create a new account.
-          </Button>
+          <h2>Update account details</h2>
+          <p>
+            It looks like you have an old account, please update your credentials to be able to log
+            in.
+          </p>
+          {message}
+          <Form onSubmit={handleSubmit}>
+            <Form.Group>
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder={name}
+                required
+                readOnly={!!auth.user.name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Surname</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder={surname}
+                required
+                readOnly={!!auth.user.surname}
+                onChange={(e) => setSurname(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Social security number</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter ssn"
+                required
+                readOnly={!!auth.user.ssn}
+                onChange={(e) => setSsn(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter email"
+                required
+                readOnly={!!auth.user.email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Enter password"
+                required
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="on"
+              />
+              <Form.Text className="text-muted">
+                Please re-enter your password to confirm the changes.
+              </Form.Text>
+            </Form.Group>
+            <Button type="submit">UPDATE</Button>
+            <Button variant="link" href="/">
+              GO BACK
+            </Button>
+          </Form>
         </Card.Body>
       </Card>
-    );
-  }
+    </>
+  );
 }
-
-UpdateUser.propTypes = {
-  dispatchOldUser: PropTypes.func.isRequired,
-  error: PropTypes.shape.isRequired,
-  update: PropTypes.shape.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-  error: state.error,
-  update: state.update,
-});
-
-export default connect(mapStateToProps, { dispatchOldUser: updateInfo })(UpdateUser);
+export default UpdateUser;
