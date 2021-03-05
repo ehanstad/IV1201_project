@@ -36,6 +36,7 @@ function Application() {
 
   const addAvail = () => {
     addAvailability({ startDate, endDate });
+    alert('Time slot added');
   };
 
   /*
@@ -46,6 +47,7 @@ function Application() {
   const addCom = () => {
     const comp = document.getElementById('compSelect').value;
     addCompentence({ competence: comp, yoe });
+    alert('competence added');
   };
 
   /*
@@ -57,33 +59,7 @@ function Application() {
     }
   });
 
-  let selectedCompetences = null;
-  let selectedAvailabilites = null;
   let competenceForm = null;
-
-  if (competences !== []) {
-    selectedCompetences = (
-      <Form.Group>
-        <Form.Label>Competences added</Form.Label>
-        {competences.map((com) => (
-          <p>
-            {com.competence}, {com.yoe}
-          </p>
-        ))}
-      </Form.Group>
-    );
-  }
-
-  if (availability !== []) {
-    selectedAvailabilites = (
-      <Form.Group>
-        <Form.Label>Availabilities added</Form.Label>
-        {availability.map(() => (
-          <p>added</p>
-        ))}
-      </Form.Group>
-    );
-  }
 
   if (apply.competence) {
     competenceForm = (
@@ -112,24 +88,22 @@ function Application() {
     <Card style={{ width: '40rem' }} className="mx-auto">
       <Card.Body>
         <Form onSubmit={sendApply}>
-          <Form.Label>Competence</Form.Label>
-          {selectedCompetences}
+          <h2>Competence</h2>
           {competenceForm}
+          <h2>Availability</h2>
           <Form.Group>
-            <Form.Label>Availability</Form.Label>
+            <Form.Group>
+              <Form.Label style={{ padding: '5px' }}>From</Form.Label>
+              <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label style={{ padding: '10px' }}>To</Form.Label>
+              <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
+            </Form.Group>
+            <Button onClick={addAvail} type="button">
+              Add availability
+            </Button>
           </Form.Group>
-          {selectedAvailabilites}
-          <Form.Group>
-            <Form.Label style={{ padding: '5px' }}>From</Form.Label>
-            <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label style={{ padding: '10px' }}>To</Form.Label>
-            <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
-          </Form.Group>
-          <Button onClick={addAvail} type="button">
-            Add availability
-          </Button>
           <Button type="submit">SUBMIT</Button>
         </Form>
       </Card.Body>
