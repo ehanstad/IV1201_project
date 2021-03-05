@@ -36,7 +36,9 @@ export const getCompetence = () => (dispatch, getState) => {
 export const sendApplication = ({ competences, startDate, endDate }) => (dispatch, getState) => {
   dispatch({ type: LOADING });
   const body = JSON.stringify({ competences, startDate, endDate });
-  axios
+  console.log(body);
+  console.log(getState);
+  /*  axios
     .get('/api/application/register', body, tokenConfig(getState))
     .then((res) => {
       dispatch({
@@ -49,5 +51,5 @@ export const sendApplication = ({ competences, startDate, endDate }) => (dispatc
       dispatch({
         type: COMPETENCE_FAIL,
       });
-    });
+    }); */
 };

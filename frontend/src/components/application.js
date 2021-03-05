@@ -9,39 +9,24 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form, Card } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { getCompetence, sendApplication } from '../redux/actions/applyActions';
+import { getCompetence } from '../redux/actions/applyActions';
 
 function Application() {
   const [yoe, setYoe] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [competences, setCompetence] = useState([]);
+  const [competence, setCompetence] = useState('');
   const apply = useSelector((state) => state.apply);
   const dispatch = useDispatch();
 
-  /*
-   * changes the state for year of experience
-   * @param {Object} e - the input for year of experince
-   */
-  const competenceChange = (e) => {
-    setCompetence({ competence_id: e.target.value });
-  };
-
-  /*
-   * changes the state for year of experience
-   * @param {Object} e - the input for year of experince
-   */
-  const yoeChange = (e) => {
-    setYoe(e.target.value);
-    console.log(yoe);
-  };
+  console.log(competence);
+  console.log(yoe);
   /*
    * changes the state for year of experience
    * @param {Object} e - the input for year of experince
    */
   const sendApply = () => {
-    console.log(competences);
-    dispatch(sendApplication({ competences, startDate, endDate }));
+    // dispatch(sendApplication({ competences, startDate, endDate }));
   };
 
   /*
@@ -60,11 +45,18 @@ function Application() {
         <Form.Label>Example select</Form.Label>
         <Form.Control as="select">
           {apply.competence.map((com) => (
-            <option>{com.name}</option>
+            <option onClick={(e) => setCompetence(e.target.value)} value={com.competence_id}>
+              {com.name}
+            </option>
           ))}
         </Form.Control>
-        <Form.Control type="text" placeholder="Years of experience" onChange={yoeChange()} />
-        <Button type="submit">Add comptence</Button>
+        <Form.Control
+          type="text"
+          placeholder="Years of experience"
+          onChange={(e) => setYoe(e.target.value)}
+          style={{ margin: '5px', width: '11rem' }}
+        />
+        <Button type="button">Add comptence</Button>
       </Form.Group>
     );
   }
