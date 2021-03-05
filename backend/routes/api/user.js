@@ -35,14 +35,13 @@ const secretKey = process.env.SECRET_KEY;
 router.post('/register', (req, res) => {
   bcrypt.genSalt(10, (serr, salt) => {
     if (serr) throw serr;
-    bcrypt.hash(req.body.pass, salt, (herr, hash) => {
+    bcrypt.hash(req.body.password, salt, (herr, hash) => {
       if (herr) throw herr;
       insertPerson(req.body.fname, req.body.lname, req.body.ssn, req.body.email, hash,
         req.body.username)
         .then(() => {
           res.json({ msg: 'user added' });
-        }).catch((dbErr) => {
-          console.log(dbErr);
+        }).catch(() => {
           res.status(500).json({ msg: 'Internal server error.' });
         });
     });
@@ -57,19 +56,23 @@ router.post('/register', (req, res) => {
  * @param {function} callback - Express middleware
  */
 router.post('/login', async (req, res) => {
-  selectUser(req.body.uname, req.body.pass)
+  selectUser(req.body.username, req.body.password)
     .then((dbRes) => {
-      bcrypt.compare(req.body.pass, dbRes[0].password).then((result) => {
-        if (result) {
-          const user = {
-            id: dbRes[0].person_id,
-            rid: dbRes[0].role_id,
-          };
-          jwt.sign({ user }, secretKey, { expiresIn: '1h' }, (err, token) => {
-            res.json({ token });
-          });
-        } else if (!result) res.status(403).json({ msg: 'Access denied.' });
-      });
+      if (dbRes.length === 0) {
+        res.status(401).json({ msg: 'Access denied.' });
+      } else {
+        bcrypt.compare(req.body.password, dbRes[0].password).then((result) => {
+          if (result) {
+            const user = {
+              id: dbRes[0].person_id,
+              rid: dbRes[0].role_id,
+            };
+            jwt.sign({ user }, secretKey, { expiresIn: '1h' }, (err, token) => {
+              res.json({ token });
+            });
+          } else if (!result) res.status(401).json({ msg: 'Access denied.' });
+        });
+      }
     }).catch((err) => {
       console.log(err);
       res.status(500).json({ msg: 'Internal server error' });
