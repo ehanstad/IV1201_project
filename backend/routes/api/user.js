@@ -58,17 +58,21 @@ router.post('/register', (req, res) => {
 router.post('/login', async (req, res) => {
   selectUser(req.body.username, req.body.password)
     .then((dbRes) => {
-      bcrypt.compare(req.body.password, dbRes[0].password).then((result) => {
-        if (result) {
-          const user = {
-            id: dbRes[0].person_id,
-            rid: dbRes[0].role_id,
-          };
-          jwt.sign({ user }, secretKey, { expiresIn: '1h' }, (err, token) => {
-            res.json({ token });
-          });
-        } else if (!result) res.status(403).json({ msg: 'Access denied.' });
-      });
+      if (dbRes.length === 0) {
+        res.status(401).json({ msg: 'Access denied.' });
+      } else {
+        bcrypt.compare(req.body.password, dbRes[0].password).then((result) => {
+          if (result) {
+            const user = {
+              id: dbRes[0].person_id,
+              rid: dbRes[0].role_id,
+            };
+            jwt.sign({ user }, secretKey, { expiresIn: '1h' }, (err, token) => {
+              res.json({ token });
+            });
+          } else if (!result) res.status(401).json({ msg: 'Access denied.' });
+        });
+      }
     }).catch((err) => {
       console.log(err);
       res.status(500).json({ msg: 'Internal server error' });
