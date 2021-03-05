@@ -13,9 +13,11 @@ import Application from './components/application';
 import UpdateUser from './components/updateUser';
 import store from './store';
 import { loadUser } from './redux/actions/authActions';
+import { clearError } from './redux/actions/errorActions';
 
 function App() {
   useEffect(() => {
+    store.dispatch(clearError());
     store.dispatch(loadUser());
   });
   return (
@@ -25,7 +27,7 @@ function App() {
         <Route exact path="/registration" component={Registration} />
         <Route exact path="/application" component={Application} />
         <Route exact path="/admin" component={Admin} />
-        <Route exact path="/updateUser" component={UpdateUser} />
+        <Route exact path="/old/update" component={UpdateUser} />
       </div>
     </Provider>
   );
