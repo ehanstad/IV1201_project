@@ -24,19 +24,15 @@ const insertPerson = async (fname, surname, ssn, email, password, username) => {
 const selectUser = async (username) => pool.query('SELECT * FROM person WHERE Username= $1', [username]).then((res) => res.rows);
 
 /*
- * Returns the user with the corresponding username
+ * Updates the information of a a person.
  */
-const getPersonByEmail = async (email) => pool.query('SELECT * FROM person WHERE email= $1', [email]).then((res) => res.rows);
-
-/*
- * Updates the user with new data
- */
-const updatePerson = async (email, name, surname, password, ssn, username) => pool.query('UPDATE person SET name=$1, surname=$2, password=$3, ssn=$4, username=$5 WHERE email= $6',
-  [name, surname, password, ssn, username, email]).then((res) => res.rows);
+const updatePerson = async ({
+  email, name, surname, ssn, username,
+}) => pool.query('UPDATE person SET name=$1, surname=$2, ssn=$3, email=$4 WHERE username= $5',
+  [name, surname, ssn, email, username]).then((res) => res.rows);
 
 module.exports = {
   insertPerson,
   selectUser,
-  getPersonByEmail,
   updatePerson,
 };
