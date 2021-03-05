@@ -24,7 +24,7 @@ const insertCompetenceProfile = async (competenceId, personId, yearsOfExperience
 };
 
 /*
- *  Inserts availabilty data to the availability table
+ * Inserts availabilty data to the availability table
  */
 const insertAvailability = async (fromDate, toDate, pid) => {
   const client = await pool.connect();
@@ -41,16 +41,15 @@ const insertAvailability = async (fromDate, toDate, pid) => {
   }
 };
 
+/*
+ * Inserts the application data
+ */
 const insertApplication = async (compitences, availabilities, id) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    compitences.map((com) => {
-      insertCompetenceProfile(com.competence, id, com.yoe);
-    });
-    availabilities.map((avail) => {
-      insertAvailability(avail.fromDate, avail.toDate, id);
-    })
+    compitences.map((com) => insertCompetenceProfile(com.competence, id, com.yoe));
+    availabilities.map((avail) => insertAvailability(avail.fromDate, avail.toDate, id));
     await client.query('COMMIT');
   } catch (e) {
     await client.query('ROLLBACK');

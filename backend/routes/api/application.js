@@ -8,14 +8,12 @@ const router = Router();
  * Responds with either a success or error 500.
  */
 router.post('/register', async (req, res) => {
-  let err = false;
-  console.log(req.body);
   insertApplication(req.body.competences, req.body.availability, req.body.id).then(() => {
     res.json({ msg: 'application added' });
-  }) .catch((err) => {
-      console.log(err);
-      res.status(500).json({ msg: 'Internal server error.' });
-    });
+  }).catch((err) => {
+    console.log(err);
+    res.status(500).json({ msg: 'Internal server error.' });
+  });
 });
 
 /**
