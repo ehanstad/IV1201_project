@@ -11,10 +11,7 @@ const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const {
-  setUser,
-  getUser,
-  getUpdateInfo,
-  updateInfo,
+  insertPerson, selectUser, getPersonByEmail, updatePerson,
 } = require('../../db/queries/user');
 const { verify } = require('../../middleware/verify');
 
@@ -37,7 +34,7 @@ const secretKey = process.env.SECRET_KEY;
  * Responds with either a success or error 500.
  */
 router.post('/getUpdateInfo', async (req, res) => {
-  getUpdateInfo(req.body.email)
+  getPersonByEmail(req.body.email)
     .then((dbRes) => {
       res.json(dbRes[0]);
     }).catch((dbErr) => {
@@ -55,7 +52,7 @@ router.post('/updateInfo', async (req, res) => {
     if (serr) throw serr;
     bcrypt.hash(req.body.password, salt, (herr, hash) => {
       if (herr) throw herr;
-      updateInfo(req.body.email, req.body.name, req.body.surname,
+      updatePerson(req.body.email, req.body.name, req.body.surname,
         hash, req.body.ssn, req.body.username)
         .then(() => {
           res.json({ msg: 'Info updated' });
@@ -76,14 +73,13 @@ router.post('/updateInfo', async (req, res) => {
 router.post('/register', (req, res) => {
   bcrypt.genSalt(10, (serr, salt) => {
     if (serr) throw serr;
-    bcrypt.hash(req.body.pass, salt, (herr, hash) => {
+    bcrypt.hash(req.body.password, salt, (herr, hash) => {
       if (herr) throw herr;
-      setUser(req.body.fname, req.body.lname, req.body.ssn, req.body.email, hash,
+      insertPerson(req.body.fname, req.body.lname, req.body.ssn, req.body.email, hash,
         req.body.username)
         .then(() => {
           res.json({ msg: 'user added' });
-        }).catch((dbErr) => {
-          console.log(dbErr);
+        }).catch(() => {
           res.status(500).json({ msg: 'Internal server error.' });
         });
     });
@@ -98,19 +94,23 @@ router.post('/register', (req, res) => {
  * @param {function} callback - Express middleware
  */
 router.post('/login', async (req, res) => {
-  getUser(req.body.uname, req.body.pass)
+  selectUser(req.body.username, req.body.password)
     .then((dbRes) => {
-      bcrypt.compare(req.body.pass, dbRes[0].password).then((result) => {
-        if (result) {
-          const user = {
-            id: dbRes[0].person_id,
-            rid: dbRes[0].role_id,
-          };
-          jwt.sign({ user }, secretKey, { expiresIn: '1h' }, (err, token) => {
-            res.json({ token });
-          });
-        } else if (!result) res.status(403).json({ msg: 'Access denied.' });
-      });
+      if (dbRes.length === 0) {
+        res.status(401).json({ msg: 'Access denied.' });
+      } else {
+        bcrypt.compare(req.body.password, dbRes[0].password).then((result) => {
+          if (result) {
+            const user = {
+              id: dbRes[0].person_id,
+              rid: dbRes[0].role_id,
+            };
+            jwt.sign({ user }, secretKey, { expiresIn: '1h' }, (err, token) => {
+              res.json({ token });
+            });
+          } else if (!result) res.status(401).json({ msg: 'Access denied.' });
+        });
+      }
     }).catch((err) => {
       console.log(err);
       res.status(500).json({ msg: 'Internal server error' });
