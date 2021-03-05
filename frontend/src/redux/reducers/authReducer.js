@@ -10,6 +10,7 @@ import {
   LOADING,
   AUTH_SUCCESS,
   AUTH_FAIL,
+  LOGOUT_SUCCESS,
 } from '../types';
 
 /**
@@ -52,6 +53,8 @@ export default function (state = initialState, action) {
     case REGISTER_SUCCESS:
     case LOGIN_FAIL:
     case REGISTER_FAIL:
+    case LOGOUT_SUCCESS:
+      localStorage.removeItem('token');
       return {
         ...state,
         loading: false,
