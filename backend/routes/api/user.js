@@ -44,10 +44,11 @@ router.patch('/old', (req, res) => {
   selectUser(username).then((result) => {
     if (!result) { res.status(500).json({ msg: 'Internal server error' }); }
     bcrypt.compare(password, result[0].password).then((plainPassword) => {
-      if (!plainPassword) { res.status(401).json({ msg: 'Unauthorized' }); }
-      updatePerson({
-        username, name, surname, ssn, email,
-      }).then(() => res.json({ msg: 'User info updated' })).catch(() => res.status(500).json({ msg: 'Internal server error' }));
+      if (!plainPassword) { res.status(401).json({ msg: 'Unauthorized' }); } else {
+        updatePerson({
+          username, name, surname, ssn, email,
+        }).then(() => res.json({ msg: 'User info updated' }));
+      }
     });
   }).catch(() => res.status(500).json({ msg: 'Internal server error' }));
 });
