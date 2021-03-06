@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button, Card, Alert } from 'react-bootstrap';
+import { Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
 import { updateOldUser } from '../redux/actions/authActions';
 import { clearError } from '../redux/actions/errorActions';
 import { UPDATE_OLD_USER_FAIL, UPDATE_OLD_USER_SUCCESS } from '../redux/types';
@@ -77,6 +77,7 @@ function UpdateUser() {
    * Generate status alert of update.
    */
   let message;
+  let success = false;
   switch (error.id) {
     case UPDATE_OLD_USER_FAIL:
       message = (
@@ -86,6 +87,7 @@ function UpdateUser() {
       );
       break;
     case UPDATE_OLD_USER_SUCCESS:
+      success = true;
       message = (
         <Alert variant="success" color="success">
           {error.message}
@@ -159,11 +161,17 @@ function UpdateUser() {
                 Please re-enter your password to confirm the changes.
               </Form.Text>
             </Form.Group>
-            <Button type="submit">UPDATE</Button>
-            <Button variant="link" href="/">
-              GO BACK
-            </Button>
+            {auth.loading ? (
+              <Button type="submit" disabled>
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+              </Button>
+            ) : (
+              <Button type="submit" disabled={success}>
+                UPDATE
+              </Button>
+            )}
           </Form>
+          <a href="/">Go back</a>
         </Card.Body>
       </Card>
     </>

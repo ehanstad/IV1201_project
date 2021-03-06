@@ -11,6 +11,8 @@ import {
   AUTH_SUCCESS,
   AUTH_FAIL,
   LOGOUT_SUCCESS,
+  UPDATE_OLD_USER_SUCCESS,
+  UPDATE_OLD_USER_FAIL,
 } from '../types';
 
 /**
@@ -51,6 +53,8 @@ export default function (state = initialState, action) {
         loading: false,
       };
     case AUTH_FAIL:
+    case UPDATE_OLD_USER_SUCCESS:
+    case UPDATE_OLD_USER_FAIL:
       localStorage.removeItem('token');
       return {
         ...state,

@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Alert, Form, Card } from 'react-bootstrap';
+import { Button, Alert, Form, Card, Spinner } from 'react-bootstrap';
 import { login } from '../redux/actions/authActions';
 import { clearError } from '../redux/actions/errorActions';
 import { LOGIN_FAIL } from '../redux/types';
@@ -91,12 +91,15 @@ function Login() {
                 autoComplete="on"
               />
             </Form.Group>
-            <Button type="submit">LOGIN</Button>
-            <inline> or</inline>
-            <Button variant="link" href="./registration">
-              Create a new account.
-            </Button>
+            {auth.loading ? (
+              <Button type="submit" disabled>
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+              </Button>
+            ) : (
+              <Button type="submit">LOGIN</Button>
+            )}
           </Form>
+          <a href="/registration">Create a new account</a>
         </Card.Body>
       </Card>
     </>

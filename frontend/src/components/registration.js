@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Alert, Form, Card } from 'react-bootstrap';
+import { Button, Alert, Form, Card, Spinner } from 'react-bootstrap';
 import { register } from '../redux/actions/authActions';
 import { REGISTER_FAIL, REGISTER_SUCCESS } from '../redux/types';
 
@@ -126,7 +126,13 @@ function Registration() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Group>
-          <Button type="submit">Register</Button>
+          {auth.loading ? (
+            <Button type="submit" disabled>
+              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+            </Button>
+          ) : (
+            <Button type="submit">REGISTER</Button>
+          )}
         </Form>
         <a href="./">Login</a>
       </Card.Body>

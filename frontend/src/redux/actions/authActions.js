@@ -68,6 +68,7 @@ export const loadUser = () => (dispatch, getState) => {
  */
 export const login = ({ username, password }) => (dispatch) => {
   const body = JSON.stringify({ username, password });
+  dispatch({ type: LOADING });
   axios
     .post('/api/user/login', body, tokenConfig())
     .then((res) => {
