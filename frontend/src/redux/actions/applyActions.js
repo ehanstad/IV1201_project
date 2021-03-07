@@ -6,7 +6,13 @@
 import axios from 'axios';
 import { returnError } from './errorActions';
 import { tokenConfig } from './authActions';
-import { LOADING, COMPETENCE_SUCCESS, COMPETENCE_FAIL } from '../types';
+import {
+  LOADING,
+  COMPETENCE_SUCCESS,
+  COMPETENCE_FAIL,
+  APPLICATION_SUCCESS,
+  APPLICATION_FAIL,
+} from '../types';
 
 /**
  *
@@ -36,20 +42,18 @@ export const getCompetence = () => (dispatch, getState) => {
 export const sendApplication = ({ competences, availability, id }) => (dispatch, getState) => {
   dispatch({ type: LOADING });
   const body = JSON.stringify({ competences, availability, id });
-  console.log(body);
-  console.log(getState);
   axios
     .post('/api/application/register', body, tokenConfig(getState))
     .then((res) => {
       dispatch({
-        type: COMPETENCE_SUCCESS,
+        type: APPLICATION_SUCCESS,
         payload: res.data,
       });
     })
     .catch((err) => {
-      dispatch(returnError(err.response.data.msg, err.response.status, COMPETENCE_FAIL));
+      dispatch(returnError(err.response.data.msg, err.response.status, APPLICATION_FAIL));
       dispatch({
-        type: COMPETENCE_FAIL,
+        type: APPLICATION_FAIL,
       });
     });
 };

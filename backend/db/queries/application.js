@@ -49,7 +49,7 @@ const insertApplication = async (compitences, availabilities, id) => {
   try {
     await client.query('BEGIN');
     compitences.map((com) => insertCompetenceProfile(com.competence, id, com.yoe));
-    availabilities.map((avail) => insertAvailability(avail.fromDate, avail.toDate, id));
+    availabilities.map((avail) => insertAvailability(avail.startDate, avail.endDate, id));
     await client.query('COMMIT');
   } catch (e) {
     await client.query('ROLLBACK');

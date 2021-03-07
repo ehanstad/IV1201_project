@@ -34,8 +34,29 @@ function Application() {
    */
   const addAvailability = (newAvail) => setAvailability((state) => [...state, newAvail]);
 
+  /*
+   * formats a date object to form yyyy-mm-dd
+   */
+  const formatDate = (date) => {
+    const d = new Date(date);
+    let month = d.getMonth() + 1;
+    let day = d.getDate();
+    const year = d.getFullYear();
+
+    if (month.toString().length < 2) {
+      month = `0${month}`;
+    }
+    if (day.toString().length < 2) {
+      day = `0${day}`;
+    }
+
+    return [year, month, day].join('-');
+  };
+
   const addAvail = () => {
-    addAvailability({ startDate, endDate });
+    const sDate = formatDate(startDate);
+    const eDate = formatDate(endDate);
+    addAvailability({ startDate: sDate, endDate: eDate });
     alert('Time slot added');
   };
 
