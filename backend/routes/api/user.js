@@ -2,6 +2,7 @@
  * @file API endpoints regarding users
  * @author Klas Engberg
  * @author Lucas Villarroel
+ * @author Erik Hanstad
  * @requires express
  * @requires bcrypt
  * @requires jwt
@@ -10,7 +11,9 @@ const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
-const { insertPerson, selectUser } = require('../../db/queries/user');
+const {
+  insertPerson, selectUser, updatePerson,
+} = require('../../db/queries/user');
 const { verify } = require('../../middleware/verify');
 
 /**
@@ -26,6 +29,45 @@ const router = Router();
  * @const
  */
 const secretKey = process.env.SECRET_KEY;
+
+/**
+ * Patches incomplete user account, given the user has a username and password.
+ * @param {string} path - Express path
+ * @param {function} callback - Express middleware
+ */
+router.patch('/old',
+  body('username').not().isEmpty().trim()
+    .escape(),
+  body('password').not().isEmpty().trim()
+    .escape(),
+  body('name').not().isEmpty().trim()
+    .escape()
+    .isAlpha('sv-SE'),
+  body('surname').not().isEmpty().trim()
+    .escape()
+    .isAlpha('sv-SE'),
+  body('ssn').not().isEmpty().trim()
+    .escape()
+    .isNumeric(),
+  (req, res) => {
+    if (!validationResult(req).isEmpty()) {
+      res.status(400).json({ msg: 'Bad request' });
+    } else {
+      const {
+        username, password, name, surname, ssn, email,
+      } = req.body;
+      selectUser(username).then((result) => {
+        if (!result) { res.status(404).json({ msg: 'Not found' }); }
+        bcrypt.compare(password, result[0].password).then((plainPassword) => {
+          if (!plainPassword) { res.status(401).json({ msg: 'Unauthorized' }); } else {
+            updatePerson({
+              username, name, surname, ssn, email,
+            }).then(() => res.json({ msg: 'User info updated' }));
+          }
+        });
+      }).catch(() => res.status(500).json({ msg: 'Internal server error' }));
+    }
+  });
 
 /**
  * Sends and adds user data to db module.
@@ -85,13 +127,24 @@ router.post('/login', body('username').escape(), body('password').escape(), asyn
       } else {
         bcrypt.compare(req.body.password, dbRes[0].password).then((result) => {
           if (result) {
-            const user = {
-              id: dbRes[0].person_id,
-              rid: dbRes[0].role_id,
-            };
-            jwt.sign({ user }, secretKey, { expiresIn: '1h' }, (err, token) => {
-              res.json({ token });
-            });
+            if (!dbRes[0].name || !dbRes[0].surname || !dbRes[0].ssn || !dbRes[0].email) {
+              const user = {
+                username: dbRes[0].username,
+                name: dbRes[0].name,
+                surname: dbRes[0].surname,
+                ssn: dbRes[0].ssn,
+                email: dbRes[0].email,
+              };
+              res.json({ user });
+            } else {
+              const user = {
+                id: dbRes[0].person_id,
+                rid: dbRes[0].role_id,
+              };
+              jwt.sign({ user }, secretKey, { expiresIn: '1h' }, (err, token) => {
+                res.json({ token });
+              });
+            }
           } else if (!result) res.status(401).json({ msg: 'Access denied.' });
         });
       }

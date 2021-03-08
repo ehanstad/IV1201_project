@@ -11,6 +11,8 @@ import {
   AUTH_SUCCESS,
   AUTH_FAIL,
   LOGOUT_SUCCESS,
+  UPDATE_OLD_USER_SUCCESS,
+  UPDATE_OLD_USER_FAIL,
 } from '../types';
 
 /**
@@ -47,12 +49,22 @@ export default function (state = initialState, action) {
       return {
         ...state,
         token: action.payload.token,
+        user: action.payload.user,
         loading: false,
       };
     case AUTH_FAIL:
+    case UPDATE_OLD_USER_SUCCESS:
+    case UPDATE_OLD_USER_FAIL:
+      localStorage.removeItem('token');
+      return {
+        ...state,
+        loading: false,
+        isAuthenticated: null,
+        token: null,
+      };
     case REGISTER_SUCCESS:
-    case LOGIN_FAIL:
     case REGISTER_FAIL:
+    case LOGIN_FAIL:
     case LOGOUT_SUCCESS:
       localStorage.removeItem('token');
       return {
