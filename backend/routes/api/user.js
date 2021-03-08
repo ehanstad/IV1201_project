@@ -35,24 +35,39 @@ const secretKey = process.env.SECRET_KEY;
  * @param {string} path - Express path
  * @param {function} callback - Express middleware
  */
-router.patch('/old', (req, res) => {
-  const {
-    username, password, name, surname, ssn, email,
-  } = req.body;
-  if (!username || !password || !name || !surname || !ssn || !email) {
-    res.status(400).json({ msg: 'Bad request' });
-  }
-  selectUser(username).then((result) => {
-    if (!result) { res.status(500).json({ msg: 'Internal server error' }); }
-    bcrypt.compare(password, result[0].password).then((plainPassword) => {
-      if (!plainPassword) { res.status(401).json({ msg: 'Unauthorized' }); } else {
-        updatePerson({
-          username, name, surname, ssn, email,
-        }).then(() => res.json({ msg: 'User info updated' }));
-      }
-    });
-  }).catch(() => res.status(500).json({ msg: 'Internal server error' }));
-});
+router.patch('/old',
+  body('username').not().isEmpty().trim()
+    .escape(),
+  body('password').not().isEmpty().trim()
+    .escape(),
+  body('name').not().isEmpty().trim()
+    .escape()
+    .isAlpha('sv-SE'),
+  body('surname').not().isEmpty().trim()
+    .escape()
+    .isAlpha('sv-SE'),
+  body('ssn').not().isEmpty().trim()
+    .escape()
+    .isNumeric(),
+  (req, res) => {
+    if (!validationResult(req).isEmpty()) {
+      res.status(400).json({ msg: 'Bad request' });
+    } else {
+      const {
+        username, password, name, surname, ssn, email,
+      } = req.body;
+      selectUser(username).then((result) => {
+        if (!result) { res.status(404).json({ msg: 'Not found' }); }
+        bcrypt.compare(password, result[0].password).then((plainPassword) => {
+          if (!plainPassword) { res.status(401).json({ msg: 'Unauthorized' }); } else {
+            updatePerson({
+              username, name, surname, ssn, email,
+            }).then(() => res.json({ msg: 'User info updated' }));
+          }
+        });
+      }).catch(() => res.status(500).json({ msg: 'Internal server error' }));
+    }
+  });
 
 /**
  * Sends and adds user data to db module.
