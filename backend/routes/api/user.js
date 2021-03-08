@@ -23,7 +23,7 @@ const { verify } = require('../../middleware/verify');
  */
 const router = Router();
 
-/*
+/**
  * Secret key for JWT
  * @type {string}
  * @const

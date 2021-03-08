@@ -1,6 +1,6 @@
 const { pool } = require('../db');
 
-/*
+/**
  * Creates a new user and inserts user data to the person table
  */
 const insertPerson = async (fname, surname, ssn, email, password, username) => {
