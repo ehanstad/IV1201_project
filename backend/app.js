@@ -1,4 +1,11 @@
-// module dependencies
+/**
+ * @file Express application
+ * @author Lucas Villarroel
+ * @requires dotenv
+ * @requires http-errors
+ * @requires express
+ * @requires path
+ */
 require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
@@ -6,20 +13,35 @@ const path = require('path');
 const User = require('./routes/api/user');
 const Application = require('./routes/api/application');
 const Admin = require('./routes/api/admin');
+const { verifyApplicant, verifyRecruiter } = require('./middleware/verify');
 
-
-// create exrpess application
+/**
+ * Express application
+ * @const
+ */
 const app = express();
 
-// use JSON middleware parser
+/**
+ * JSON middleware
+ */
 app.use(express.json());
 
-// API routes
+/**
+ * use API endpoints
+ */
 app.use('/api/user', User);
 app.use('/api/application', Application);
 app.use('/api/admin', Admin);
 
-// serve static files
+/**
+ * Use middleware for protected routes
+ */
+app.use('/applicant', verifyApplicant);
+app.use('/recruiter', verifyRecruiter);
+
+/**
+ * Serve static files
+ */
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('../frontend/build'));
 }
@@ -27,12 +49,20 @@ app.get('*', (request, response) => {
   response.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
-// catch 404 and forward to error handler
+/**
+ * Catch 404 and forward to error handler
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware
+ */
 app.use((req, res, next) => {
   next(createError(404));
 });
 
-// error handler
+/**
+ * Error handler
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware
+ */
 app.use((err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;

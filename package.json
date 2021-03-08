@@ -9,6 +9,7 @@
     "dev": "concurrently \"npm run server --prefix backend\" \"npm run start --prefix frontend\"",
     "start": "npm run start --prefix backend",
     "build": "npm run --prefix frontend build",
+    "production": "npm run build && NODE_ENV='production' npm run server --prefix backend",
     "clean-install": "npm ci --prefix backend && npm ci --prefix frontend",
     "install": "npm i --prefix backend",
     "test": "npm run --prefix backend test && npm run --prefix frontend test",
