@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { insertApplication, selectCompetence } = require('../../db/queries/application');
+const { verify } = require('../../middleware/verify');
 
 const router = Router();
 

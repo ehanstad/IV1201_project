@@ -65,8 +65,6 @@ export const loadUser = () => (dispatch, getState) => {
  * @param {Object} form_params The login information entered by the user.
  */
 export const login = ({ username, password }) => (dispatch) => {
-  console.log(username);
-  console.log(password);
   const body = JSON.stringify({ username, password });
   axios
     .post('/api/user/login', body, tokenConfig())
