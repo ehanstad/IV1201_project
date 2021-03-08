@@ -1,6 +1,6 @@
 const { pool } = require('../db');
 
-/*
+/**
  * Creates a new user and inserts user data to the person table
  */
 const insertPerson = async (fname, surname, ssn, email, password, username) => {
@@ -23,4 +23,28 @@ const insertPerson = async (fname, surname, ssn, email, password, username) => {
  */
 const selectUser = async (username) => pool.query('SELECT * FROM person WHERE Username= $1', [username]).then((res) => res.rows);
 
-module.exports = { insertPerson, selectUser };
+/*
+ * Updates the information of a a person.
+ */
+const updatePerson = async ({
+  email, name, surname, ssn, username,
+}) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await pool.query('UPDATE person SET name=$1, surname=$2, ssn=$3, email=$4 WHERE username= $5',
+      [name, surname, ssn, email, username]);
+    await client.query('COMMIT');
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
+};
+
+module.exports = {
+  insertPerson,
+  selectUser,
+  updatePerson,
+};
