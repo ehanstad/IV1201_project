@@ -28,8 +28,20 @@ const selectUser = async (username) => pool.query('SELECT * FROM person WHERE Us
  */
 const updatePerson = async ({
   email, name, surname, ssn, username,
-}) => pool.query('UPDATE person SET name=$1, surname=$2, ssn=$3, email=$4 WHERE username= $5',
-  [name, surname, ssn, email, username]).then((res) => res.rows);
+}) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await pool.query('UPDATE person SET name=$1, surname=$2, ssn=$3, email=$4 WHERE username= $5',
+      [name, surname, ssn, email, username]);
+    await client.query('COMMIT');
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
+};
 
 module.exports = {
   insertPerson,
