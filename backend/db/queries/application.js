@@ -5,7 +5,6 @@ const { pool } = require('../db');
  */
 const selectCompetence = async () => pool.query('SELECT * FROM competence').then((res) => res);
 
-
 /*
  * Returns the competence id with the corresponding competence name
  */
@@ -54,11 +53,9 @@ const insertApplication = async (compitences, availabilities, id) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    compitences.map((com) =>  {
-      selectCompetenceId(com.competence).then((cid) => {
-        insertCompetenceProfile(cid, id, com.yoe);
-      });
-    });
+    compitences.map((com) => (
+      selectCompetenceId(com.competence).then((cid) => insertCompetenceProfile(cid, id, com.yoe))
+    ));
     availabilities.map((avail) => insertAvailability(avail.startDate, avail.endDate, id));
     await client.query('COMMIT');
   } catch (e) {
