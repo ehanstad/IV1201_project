@@ -10,6 +10,7 @@
 const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { body, validationResult } = require('express-validator');
 const {
   insertPerson, selectUser, updatePerson,
 } = require('../../db/queries/user');
@@ -55,25 +56,46 @@ router.patch('/old', (req, res) => {
 
 /**
  * Sends and adds user data to db module.
- * Responds with either a success or error 500.
+ * Responds with either a success or error.
  * @param {string} path - Express path
  * @param {function} callback - Express middleware
  */
-router.post('/register', (req, res) => {
-  bcrypt.genSalt(10, (serr, salt) => {
-    if (serr) throw serr;
-    bcrypt.hash(req.body.password, salt, (herr, hash) => {
-      if (herr) throw herr;
-      insertPerson(req.body.fname, req.body.lname, req.body.ssn, req.body.email, hash,
-        req.body.username)
-        .then(() => {
-          res.json({ msg: 'user added' });
-        }).catch(() => {
-          res.status(500).json({ msg: 'Internal server error.' });
+router.post('/register',
+  body('fname').not().isEmpty().trim()
+    .escape()
+    .isAlpha('sv-SE'),
+  body('lname').not().isEmpty().trim()
+    .escape()
+    .isAlpha('sv-SE'),
+  body('ssn').not().isEmpty().trim()
+    .escape()
+    .isNumeric(),
+  body('email').not().isEmpty().trim()
+    .escape()
+    .isEmail(),
+  body('username').not().isEmpty().trim()
+    .escape(),
+  body('pass').not().isEmpty().trim()
+    .escape(),
+  (req, res) => {
+    if (!validationResult(req).isEmpty()) {
+      res.status(400).json({ msg: 'Faulty data entered' });
+    } else {
+      bcrypt.genSalt(10, (serr, salt) => {
+        if (serr) throw serr;
+        bcrypt.hash(req.body.password, salt, (herr, hash) => {
+          if (herr) throw herr;
+          insertPerson(req.body.fname, req.body.lname, req.body.ssn, req.body.email, hash,
+            req.body.username)
+            .then(() => {
+              res.json({ msg: 'user added' });
+            }).catch(() => {
+              res.status(500).json({ msg: 'Internal server error.' });
+            });
         });
-    });
+      });
+    }
   });
-});
 
 /**
  * Method for login
@@ -82,7 +104,7 @@ router.post('/register', (req, res) => {
  * @param {string} path - Express path
  * @param {function} callback - Express middleware
  */
-router.post('/login', async (req, res) => {
+router.post('/login', body('uname').escape(), body('pass').escape(), async (req, res) => {
   selectUser(req.body.username, req.body.password)
     .then((dbRes) => {
       if (dbRes.length === 0) {
