@@ -119,7 +119,7 @@ router.post('/register',
  * @param {string} path - Express path
  * @param {function} callback - Express middleware
  */
-router.post('/login', body('uname').escape(), body('pass').escape(), async (req, res) => {
+router.post('/login', body('username').escape(), body('password').escape(), async (req, res) => {
   selectUser(req.body.username, req.body.password)
     .then((dbRes) => {
       if (dbRes.length === 0) {

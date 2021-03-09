@@ -45,7 +45,6 @@ const verify = function verifyToken(req, res, next) {
  */
 const verifyApplicant = function verifyToken(req, res, next) {
   const bearerHeader = req.headers.authorization;
-
   if (!bearerHeader) { res.status(401).redirect('/'); } else {
     const bearer = bearerHeader.split(' ');
     const bearerToken = bearer[1];
