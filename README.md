@@ -27,3 +27,15 @@ To run tests
 
 Static code analysis
 - `npm run lint`
+
+## Deployment
+To deploy the application simply push new features into the main branch
+and it automatically update the deployed application on heroku.
+
+A suggestion is to use pull requests and use github-actions as restictions.
+
+## Database
+The application uses heroku postgres to access it, simply go to the applications heroku dashboard side
+and under "Installed add-ons" you will find a link.
+
+For more infromation regarding the application please read the projects [wiki-side](https://github.com/ehanstad/IV1201_project/wiki).
