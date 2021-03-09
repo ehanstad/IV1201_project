@@ -24,7 +24,6 @@ export const tokenConfig = (getState) => {
   if (getState) {
     token = getState().auth.token;
   }
-
   // Headers
   const config = {
     headers: {
@@ -36,6 +35,7 @@ export const tokenConfig = (getState) => {
   if (token) {
     config.headers.Authorization = `Basic ${token}`;
   }
+  console.log(config);
   return config;
 };
 

@@ -3,7 +3,7 @@
  * @requires react-router-dom
  * @author Erik Hanstad
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form, Card, Modal } from 'react-bootstrap';
@@ -19,11 +19,13 @@ function Application() {
   const [availability, setAvailability] = useState([]);
   const [competences, setCompetence] = useState([]);
   const [show, setShow] = useState(false);
+  const [hasDispached, setHasDispached] = useState(false);
   const apply = useSelector((state) => state.apply);
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
   /*
    * changes the state for year of experience
    */
@@ -97,11 +99,10 @@ function Application() {
   /*
    * If state apply does not exists the function get competence is called.
    */
-  useEffect(() => {
-    if (!apply.competence) {
-      dispatch(getCompetence());
-    }
-  });
+  if (!hasDispached) {
+    dispatch(getCompetence());
+    setHasDispached(true);
+  }
 
   let competenceForm = null;
   let selecedCompetences = null;

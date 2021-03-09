@@ -30,7 +30,7 @@ app.use(express.json());
  * use API endpoints
  */
 app.use('/api/user', User);
-app.use('/api/application', verifyApplicant, Application);
+app.use('/api/application', Application, verifyApplicant);
 app.use('/api/admin', Admin);
 
 /**

@@ -19,9 +19,12 @@ import {
  */
 export const getCompetence = () => (dispatch, getState) => {
   dispatch({ type: LOADING });
+  const config = tokenConfig(getState);
+  console.log(config);
   axios
-    .post('/api/application/competence', tokenConfig(getState))
+    .post('/api/application/competence', config)
     .then((res) => {
+      console.log(res);
       dispatch({
         type: COMPETENCE_SUCCESS,
         payload: res.data,
@@ -42,8 +45,9 @@ export const getCompetence = () => (dispatch, getState) => {
 export const sendApplication = ({ competences, availability, id }) => (dispatch, getState) => {
   dispatch({ type: LOADING });
   const body = JSON.stringify({ competences, availability, id });
+  const config = tokenConfig(getState);
   axios
-    .post('/api/application/register', body, tokenConfig(getState))
+    .post('/api/application/register', body, config)
     .then((res) => {
       dispatch({
         type: APPLICATION_SUCCESS,
