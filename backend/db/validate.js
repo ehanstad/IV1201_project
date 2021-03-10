@@ -1,5 +1,16 @@
+/**
+ * @file Integration level validator, validates and sanitizes data to be used in queries.
+ * @author Lucas Villarroel
+ * @requires validator - tool used for validating.
+ */
 const validator = require('validator');
 
+/**
+ * Returns valid and sanitized data, throws error if any data is invalid.
+ * @param {object} params - object containing the parameters to validate.
+ * @returns {object} - valid data.
+ * @throws {error} - has message with which parameters are invalid.
+ */
 const validate = ({
   fname, surname, ssn, email, username,
 }) => {

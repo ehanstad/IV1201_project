@@ -1,3 +1,8 @@
+/**
+ * @file Integration level validator, validates and sanitizes data to be used in queries.
+ * @author Erik Hanstad
+ * @author Lucas Villarroel
+ */
 const { pool } = require('../db');
 const { validate } = require('../validate');
 
@@ -26,7 +31,11 @@ const insertPerson = async (fname, surname, ssn, email, password, username) => {
 /*
  * Returns the user with the corresponding username
  */
-const selectUser = async (username) => pool.query('SELECT * FROM person WHERE Username= $1', [username]).then((res) => res.rows);
+const selectUser = async (username) => {
+  const valid = validate({ username });
+  const res = await pool.query('SELECT * FROM person WHERE Username= $1', [valid.username]);
+  return res.rows;
+};
 
 /*
  * Updates the information of a a person.
