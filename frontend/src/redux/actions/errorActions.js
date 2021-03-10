@@ -14,7 +14,7 @@ import {
 
 function getErrorMessage(status, id) {
   if (id === LOGIN_FAIL && (status === 400 || status === 401)) {
-    return 'Incorrect username of password';
+    return 'Incorrect username or password';
   }
   if (id === REGISTER_FAIL && status === 400) {
     return 'Invalid field(s), remove any special characters from name and surname, email needs to be valid, ssn needs to be in format YYYYMMDDXXXX';

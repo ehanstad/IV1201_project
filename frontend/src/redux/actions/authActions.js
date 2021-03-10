@@ -103,7 +103,7 @@ export const register = ({ fname, lname, ssn, email, username, password }) => (d
   axios
     .post('/api/user/register', body, tokenConfig())
     .then((res) => {
-      dispatch(returnError(res.response.status, REGISTER_SUCCESS));
+      dispatch(returnError(res.status, REGISTER_SUCCESS));
       dispatch({
         type: REGISTER_SUCCESS,
         payload: res.data,
@@ -128,7 +128,7 @@ export const updateOldUser = ({ name, surname, ssn, email, username, password })
   axios
     .patch('/api/user/old', body, tokenConfig())
     .then((res) => {
-      dispatch(returnError(res.response.status, UPDATE_OLD_USER_SUCCESS));
+      dispatch(returnError(res.status, UPDATE_OLD_USER_SUCCESS));
       dispatch({
         type: UPDATE_OLD_USER_SUCCESS,
         payload: res.data,
