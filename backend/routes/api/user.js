@@ -54,15 +54,15 @@ router.patch('/old',
       res.status(400).json({ msg: 'Bad request' });
     } else {
       const {
-        username, password, name, surname, ssn, email,
+        username, password, name: fname, surname, ssn, email,
       } = req.body;
       selectUser(username).then((result) => {
         if (!result) { res.status(404).json({ msg: 'Not found' }); }
         bcrypt.compare(password, result[0].password).then((plainPassword) => {
           if (!plainPassword) { res.status(401).json({ msg: 'Unauthorized' }); } else {
             updatePerson({
-              username, name, surname, ssn, email,
-            }).then(() => res.json({ msg: 'User info updated' }));
+              username, fname, surname, ssn, email,
+            }).then(() => res.json({ msg: 'User info updated' })).catch(() => res.status(500).json({ msg: 'Internal server error' }));
           }
         });
       }).catch(() => res.status(500).json({ msg: 'Internal server error' }));
