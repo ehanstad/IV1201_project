@@ -54,7 +54,7 @@ export const loadUser = () => (dispatch, getState) => {
       });
     })
     .catch((err) => {
-      dispatch(returnError(err.response.data.msg, err.response.status, AUTH_FAIL));
+      dispatch(returnError(err.response.status, AUTH_FAIL));
       dispatch({
         type: AUTH_FAIL,
       });
@@ -80,7 +80,7 @@ export const login = ({ username, password }) => (dispatch) => {
       ).then(() => dispatch(loadUser()));
     })
     .catch((err) => {
-      dispatch(returnError('Incorrect username or password.', err.response.status, LOGIN_FAIL));
+      dispatch(returnError(err.response.status, LOGIN_FAIL));
       dispatch({
         type: LOGIN_FAIL,
       });
@@ -103,20 +103,14 @@ export const register = ({ fname, lname, ssn, email, username, password }) => (d
   axios
     .post('/api/user/register', body, tokenConfig())
     .then((res) => {
-      dispatch(returnError('Account created successfully.', 200, REGISTER_SUCCESS));
+      dispatch(returnError(res.response.status, REGISTER_SUCCESS));
       dispatch({
         type: REGISTER_SUCCESS,
         payload: res.data,
       });
     })
     .catch((err) => {
-      dispatch(
-        returnError(
-          'A user with that username or email already exists.',
-          err.response.status,
-          REGISTER_FAIL,
-        ),
-      );
+      dispatch(returnError(err.response.status, REGISTER_FAIL));
       dispatch({
         type: REGISTER_FAIL,
       });
@@ -134,14 +128,14 @@ export const updateOldUser = ({ name, surname, ssn, email, username, password })
   axios
     .patch('/api/user/old', body, tokenConfig())
     .then((res) => {
-      dispatch(returnError('Account updated.', 200, UPDATE_OLD_USER_SUCCESS));
+      dispatch(returnError(res.response.status, UPDATE_OLD_USER_SUCCESS));
       dispatch({
         type: UPDATE_OLD_USER_SUCCESS,
         payload: res.data,
       });
     })
     .catch((err) => {
-      dispatch(returnError('Invalid password.', err.response.status, UPDATE_OLD_USER_FAIL));
+      dispatch(returnError(err.response.status, UPDATE_OLD_USER_FAIL));
       dispatch({
         type: UPDATE_OLD_USER_FAIL,
       });
