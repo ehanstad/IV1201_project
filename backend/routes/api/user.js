@@ -60,9 +60,7 @@ router.patch('/old',
         if (!result) { res.status(404).json({ msg: 'Not found' }); }
         bcrypt.compare(password, result[0].password).then((plainPassword) => {
           if (!plainPassword) { res.status(401).json({ msg: 'Unauthorized' }); } else {
-            updatePerson({
-              username, fname, surname, ssn, email,
-            }).then(() => res.json({ msg: 'User info updated' })).catch(() => res.status(500).json({ msg: 'Internal server error' }));
+            updatePerson(fname, surname, ssn, email, username).then(() => res.json({ msg: 'User info updated' })).catch(() => res.status(500).json({ msg: 'Internal server error' }));
           }
         });
       }).catch(() => res.status(500).json({ msg: 'Internal server error' }));
