@@ -21,10 +21,10 @@ const validate = ({
   if (fname) {
     const fnameClean = validator.escape(fname.trim());
     if (fnameClean) {
-      if (validator.isAlpha(fnameClean.replace(/\s/g, ''))) {
-        valid.fname = fnameClean;
+      if (validator.isAlpha(fnameClean.replace(/\s+/, ''))) {
+        valid.fname = fnameClean.replace(/\s+/, ' ');
       } else {
-        error.fname = `Contains symbols other than (A-Ö, a-ö) and spaces, got '${fname}'`;
+        error.fname = `Invalid name '${fnameClean}', can only contain lettters (A-Ö, a-ö) and at most one space`;
       }
     } else {
       error.fname = 'Empty name';
@@ -35,10 +35,10 @@ const validate = ({
   if (surname) {
     const surnameClean = validator.escape(surname.trim());
     if (surnameClean) {
-      if (validator.isAlpha(surnameClean.replace(/\s/g, ''))) {
-        valid.surname = surnameClean;
+      if (validator.isAlpha(surnameClean.replace(/\s+/, ''))) {
+        valid.surname = surnameClean.replace(/\s+/, ' ');
       } else {
-        error.surname = 'Contains symbols other than (A-Ö, a-ö) and spaces';
+        error.surname = `Invalid surname '${surnameClean}', can only contain lettters (A-Ö, a-ö) and at most one space`;
       }
     } else {
       error.surname = 'Empty surname';
@@ -52,10 +52,10 @@ const validate = ({
       if (ssnClean.length === 12) {
         valid.ssn = ssnClean;
       } else {
-        error.ssn = `Has to follow format YYYYMMDDXXXX, got '${ssn}'`;
+        error.ssn = `Invalid ssn '${ssnClean}', has to follow YYYYMMDDXXXX format`;
       }
     } else {
-      error.ssn = `Can only be numeric values (0-9), got '${ssn}'`;
+      error.ssn = `Invalid ssn '${ssnClean}', can only contain numeric values (0-9)`;
     }
   }
 
@@ -65,7 +65,7 @@ const validate = ({
     if (validator.isEmail(emailClean)) {
       valid.email = emailClean;
     } else {
-      error.email = `Invalid email, '${email}'`;
+      error.email = `Invalid email '${emailClean}'`;
     }
   }
 
@@ -75,7 +75,7 @@ const validate = ({
     if (validator.isAlphanumeric(cleanUsername)) {
       valid.username = cleanUsername;
     } else {
-      error.username = `Invalid username, ${username}`;
+      error.username = `Invalid username '${cleanUsername}', needs to be alphanumeric (A-Ö, a-ö, 0-9)`;
     }
   }
 
