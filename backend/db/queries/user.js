@@ -8,6 +8,12 @@ const { validate } = require('../validate');
 
 /**
  * Creates a new user and inserts user data to the person table
+ * @param {string} fname - name of person
+ * @param {string} surname - surname of person
+ * @param {string} ssn - social security number of person
+ * @param {string} email - email of person
+ * @param {string} password - password of person
+ * @param {string} username - username of person
  */
 const insertPerson = async (fname, surname, ssn, email, password, username) => {
   const client = await pool.connect();
@@ -28,8 +34,10 @@ const insertPerson = async (fname, surname, ssn, email, password, username) => {
   }
 };
 
-/*
- * Returns the user with the corresponding username
+/**
+ * Returns the user with the corresponding username.
+ * @param {string} username - person username
+ * @returns an array of users with username.
  */
 const selectUser = async (username) => {
   const valid = validate({ username });
@@ -37,16 +45,19 @@ const selectUser = async (username) => {
   return res.rows;
 };
 
-/*
- * Updates the information of a a person.
+/**
+ * Updates the user information of a a person.
+ * @param {string} fname - name of person
+ * @param {string} surname - surname of person
+ * @param {string} ssn - social security number of person
+ * @param {string} email - email of person
+ * @param {string} username - username of person
  */
-const updatePerson = async ({
-  email, fname, surname, ssn, username,
-}) => {
+const updatePerson = async (fname, surname, ssn, email, username) => {
   const client = await pool.connect();
   try {
     const valid = validate({
-      email, fname, surname, ssn, username,
+      fname, surname, ssn, email, username,
     });
     await client.query('BEGIN');
     await pool.query('UPDATE person SET name=$1, surname=$2, ssn=$3, email=$4 WHERE username= $5',
@@ -60,8 +71,21 @@ const updatePerson = async ({
   }
 };
 
+/**
+ * Finds persons with username or email.
+ * @param {string} username - person username
+ * @param {string} email - person email
+ * @returns - persons with specified email or username.
+ */
+const findByUsernameEmail = async (username, email) => {
+  const valid = validate({ username, email });
+  const res = await pool.query('SELECT * FROM person WHERE Username=$1 OR Email=$2', [valid.username, valid.email]);
+  return res.rows;
+};
+
 module.exports = {
   insertPerson,
   selectUser,
   updatePerson,
+  findByUsernameEmail,
 };

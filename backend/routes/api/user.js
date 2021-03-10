@@ -12,7 +12,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const {
-  insertPerson, selectUser, updatePerson,
+  insertPerson, selectUser, updatePerson, findByUsernameEmail,
 } = require('../../db/queries/user');
 const { verify } = require('../../middleware/verify');
 
@@ -60,9 +60,7 @@ router.patch('/old',
         if (!result) { res.status(404).json({ msg: 'Not found' }); }
         bcrypt.compare(password, result[0].password).then((plainPassword) => {
           if (!plainPassword) { res.status(401).json({ msg: 'Unauthorized' }); } else {
-            updatePerson({
-              username, fname, surname, ssn, email,
-            }).then(() => res.json({ msg: 'User info updated' })).catch(() => res.status(500).json({ msg: 'Internal server error' }));
+            updatePerson(fname, surname, ssn, email, username).then(() => res.json({ msg: 'User info updated' })).catch(() => res.status(500).json({ msg: 'Internal server error' }));
           }
         });
       }).catch(() => res.status(500).json({ msg: 'Internal server error' }));
@@ -94,21 +92,20 @@ router.post('/register',
     .escape(),
   (req, res) => {
     if (!validationResult(req).isEmpty()) {
-      res.status(400).json({ msg: 'Faulty data entered' });
+      res.status(400).json({ msg: 'Bad request' });
     } else {
-      bcrypt.genSalt(10, (serr, salt) => {
-        if (serr) throw serr;
-        bcrypt.hash(req.body.password, salt, (herr, hash) => {
-          if (herr) throw herr;
-          insertPerson(req.body.fname, req.body.lname, req.body.ssn, req.body.email, hash,
-            req.body.username)
-            .then(() => {
-              res.json({ msg: 'user added' });
-            }).catch(() => {
-              res.status(500).json({ msg: 'Internal server error.' });
-            });
+      findByUsernameEmail(req.body.username, req.body.email).then((result) => {
+        if (result.length > 0) res.status(403).json({ msg: 'Forbidden.' });
+        bcrypt.genSalt(10, (serr, salt) => {
+          if (serr) throw serr;
+          bcrypt.hash(req.body.password, salt, (herr, hash) => {
+            if (herr) throw herr;
+            insertPerson(req.body.fname, req.body.lname, req.body.ssn, req.body.email, hash,
+              req.body.username)
+              .then(() => res.json({ msg: 'user added' })).catch(() => res.status(500).json({ msg: 'Internal server error.' }));
+          });
         });
-      });
+      }).catch(() => res.status(500).json({ msg: 'Internal server error.' }));
     }
   });
 
@@ -120,38 +117,42 @@ router.post('/register',
  * @param {function} callback - Express middleware
  */
 router.post('/login', body('uname').escape(), body('pass').escape(), async (req, res) => {
-  selectUser(req.body.username, req.body.password)
-    .then((dbRes) => {
-      if (dbRes.length === 0) {
-        res.status(401).json({ msg: 'Access denied.' });
-      } else {
-        bcrypt.compare(req.body.password, dbRes[0].password).then((result) => {
-          if (result) {
-            if (!dbRes[0].name || !dbRes[0].surname || !dbRes[0].ssn || !dbRes[0].email) {
-              const user = {
-                username: dbRes[0].username,
-                name: dbRes[0].name,
-                surname: dbRes[0].surname,
-                ssn: dbRes[0].ssn,
-                email: dbRes[0].email,
-              };
-              res.json({ user });
-            } else {
-              const user = {
-                id: dbRes[0].person_id,
-                rid: dbRes[0].role_id,
-              };
-              jwt.sign({ user }, secretKey, { expiresIn: '1h' }, (err, token) => {
-                res.json({ token });
-              });
-            }
-          } else if (!result) res.status(401).json({ msg: 'Access denied.' });
-        });
-      }
-    }).catch((err) => {
-      console.log(err);
-      res.status(500).json({ msg: 'Internal server error' });
-    });
+  if (!validationResult(req).isEmpty()) {
+    res.status(400).json({ msg: 'Bad request' });
+  } else {
+    selectUser(req.body.username, req.body.password)
+      .then((dbRes) => {
+        if (dbRes.length === 0) {
+          res.status(401).json({ msg: 'Access denied.' });
+        } else {
+          bcrypt.compare(req.body.password, dbRes[0].password).then((result) => {
+            if (result) {
+              if (!dbRes[0].name || !dbRes[0].surname || !dbRes[0].ssn || !dbRes[0].email) {
+                const user = {
+                  username: dbRes[0].username,
+                  name: dbRes[0].name,
+                  surname: dbRes[0].surname,
+                  ssn: dbRes[0].ssn,
+                  email: dbRes[0].email,
+                };
+                res.json({ user });
+              } else {
+                const user = {
+                  id: dbRes[0].person_id,
+                  rid: dbRes[0].role_id,
+                };
+                jwt.sign({ user }, secretKey, { expiresIn: '1h' }, (err, token) => {
+                  res.json({ token });
+                });
+              }
+            } else if (!result) res.status(401).json({ msg: 'Access denied.' });
+          });
+        }
+      }).catch((err) => {
+        console.log(err);
+        res.status(500).json({ msg: 'Internal server error' });
+      });
+  }
 });
 
 /**
