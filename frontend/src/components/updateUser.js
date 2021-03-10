@@ -132,7 +132,7 @@ function UpdateUser() {
               <Form.Label>Social security number</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter ssn"
+                placeholder="YYYYMMDDXXXX"
                 required
                 readOnly={!!auth.user.ssn}
                 onChange={(e) => setSsn(e.target.value)}

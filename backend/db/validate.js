@@ -17,7 +17,6 @@ const validate = ({
   const error = {};
   const valid = {};
 
-  // first name validation
   if (fname) {
     const fnameClean = validator.escape(fname.trim());
     if (fnameClean) {
@@ -31,7 +30,6 @@ const validate = ({
     }
   }
 
-  // surname validation
   if (surname) {
     const surnameClean = validator.escape(surname.trim());
     if (surnameClean) {
@@ -45,7 +43,6 @@ const validate = ({
     }
   }
 
-  // social security number validation
   if (ssn) {
     const ssnClean = validator.escape(ssn.trim());
     if (validator.isNumeric(ssnClean)) {
@@ -59,7 +56,6 @@ const validate = ({
     }
   }
 
-  // email validation
   if (email) {
     const emailClean = validator.escape(email.trim());
     if (validator.isEmail(emailClean)) {
@@ -69,7 +65,6 @@ const validate = ({
     }
   }
 
-  // username validation
   if (username) {
     const cleanUsername = validator.escape(username.trim());
     if (validator.isAlphanumeric(cleanUsername)) {

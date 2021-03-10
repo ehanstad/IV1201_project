@@ -1,5 +1,5 @@
 /**
- * @file Integration level validator, validates and sanitizes data to be used in queries.
+ * @file User queries.
  * @author Erik Hanstad
  * @author Lucas Villarroel
  */

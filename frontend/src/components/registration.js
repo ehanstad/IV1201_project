@@ -94,7 +94,7 @@ function Registration() {
             <Form.Label>Social security number</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter social security #"
+              placeholder="YYYYMMDDXXXX"
               required
               onChange={(e) => setSsn(e.target.value)}
             />
