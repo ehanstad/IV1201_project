@@ -60,8 +60,15 @@ const updatePerson = async ({
   }
 };
 
+const findByUsernameEmail = async (username, email) => {
+  const valid = validate({ username, email });
+  const res = await pool.query('SELECT * FROM person WHERE Username=$1 OR Email=$2', [valid.username, valid.email]);
+  return res.rows;
+};
+
 module.exports = {
   insertPerson,
   selectUser,
   updatePerson,
+  findByUsernameEmail,
 };
