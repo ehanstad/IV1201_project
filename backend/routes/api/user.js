@@ -90,7 +90,7 @@ router.post('/register',
     .isEmail(),
   body('username').not().isEmpty().trim()
     .escape(),
-  body('pass').not().isEmpty().trim()
+  body('password').not().isEmpty().trim()
     .escape(),
   (req, res) => {
     if (!validationResult(req).isEmpty()) {
